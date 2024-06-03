@@ -1,16 +1,15 @@
 from config import settings
-from typing import Callable
-
-app = None
-
+from data.json import to_json
+from server.start import Server
 
 
-def incomplete_function( func: Callable[[any], any] ) -> None:
-	print(f'{ func.__name__ } is not done')
+# app = start_server()
+app = Server()
+print(to_json(app))
 
 
-def use_dev_mode():
-	app = None
-	incomplete_function(use_dev_mode)
 
-if settings.DEV_MODE == True:	use_dev_mode()
+
+
+
+# if settings.DEV_MODE == True:	app.use_dev_mode()
