@@ -1,16 +1,9 @@
 from config import settings
 from data.json import to_json
-# from server.start import Server
-from server.server import Server_Connection
+from server.server import Web_Server
 
-# app = start_server()
-# app = Server()
-app = Server_Connection('web')
-# print(to_json(app))
+# from routing.router import WebRouter
 
-
-
-
-
-
-# if settings.DEV_MODE == True:	app.use_dev_mode()
+# app = Server_Connection('web')
+app = Web_Server('web')
+app.receive_request()
