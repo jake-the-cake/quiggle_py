@@ -1,11 +1,19 @@
-import os, subprocess
+# quiggle libraries
 from config import settings
 from core.load import load_settings
-
-import logging
-
-from socket import socket, AF_INET, SOCK_STREAM, error as socket_error, timeout as socket_timeout
 from routing.router import Web_Router
+
+# python libraries
+import os, subprocess
+from socket import (
+	socket,
+	AF_INET,
+	SOCK_STREAM,
+	error as socket_error,
+	timeout as socket_timeout
+)
+
+
 
 
 #types
@@ -13,14 +21,23 @@ from typing import Literal, Optional
 Server_Type = Literal['web', 'data', 'auth', 'media', 'admin']
 True_Or_None_Type = Optional[True]
 
+
+
+
+
 #null check
 def if_has_value(check_value: any, default_value: any):
 	if check_value: return check_value
 	return default_value
 
+
+#
+#
+#
+
+
 class Server_Connection:
 	def __init__(self, type: Server_Type = 'web', port: int | None = None) -> None:
-		logging.basicConfig(level=logging.ERROR)
 		self.port = if_has_value(port, Server_Connection.default_ports[type])
 		self.host = '127.0.0.1'
 		if not self.create_socket(): return print('Could Not Connect')
@@ -101,6 +118,14 @@ class Server_Connection:
 		'admin': 1001
 	}
 
+
+
+#
+#
+#
+
+
+
 class Web_Server(Server_Connection):
 	def continue_to_listen(self, server_socket):
 		if self.settings['USE_AUTO_ROUTER'] == True:
@@ -108,18 +133,18 @@ class Web_Server(Server_Connection):
 		try:
 			while True:
 				client_socket, client_address = server_socket.accept()
-				# print(f"Connection from {client_address}")
+				print(f"Connection from {client_address}")
 				with client_socket:
 					request = client_socket.recv(1024)
 					method, path = self.parse_http_req(request.decode())
 					response = self.search_for_route(path)
 					print(response)
-					if response['status'] == 'ok':
+					if response['status'] == 'OK':
 						output = response['data']
 					else:
 						output = response['message']
 
-					client_socket.send(self.build_response(response['status_code'], len(output), output))
+					client_socket.send(self.build_response(response, output))
 		except KeyboardInterrupt:
 			print('\nServer disconnected...')
 			self.kill_process_on_port(self.find_process_on_port())
@@ -141,7 +166,7 @@ class Web_Server(Server_Connection):
 				data = file.read()
 		if data: return {
 			'status_code': 200,
-			'status': 'ok',
+			'status': 'OK',
 			'data': data
 		}
 		else: return {
@@ -150,8 +175,12 @@ class Web_Server(Server_Connection):
 			'message': 'Not Found!!.'
 		}
 
-	def build_response(self, status_code, content_len, html):
-		return 'HTTP/1.1 {} OK\r\nContent-Length: {}\r\n\r\n{}'.format(status_code, content_len, html).encode('utf-8')
+	def build_response(self, response, html):
+		status = {
+			'code': response['status_code'],
+			'value': response['status']
+		}
+		return 'HTTP/1.1 {} {}\r\nContent-Length: {}\r\n\r\n{}'.format(status['code'], status['value'], len(html), html).encode('utf-8')
 
 	# def receive_request(self):
 		# print(x)
