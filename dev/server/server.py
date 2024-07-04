@@ -2,6 +2,8 @@
 from config import settings
 from core.load import load_settings
 from routing.router import Web_Router
+# from core.utils.array import trim_array
+from routing.paths import split_path
 
 # python libraries
 import os, subprocess
@@ -12,6 +14,7 @@ from socket import (
 	error as socket_error,
 	timeout as socket_timeout
 )
+from typing import Tuple
 
 
 
@@ -127,6 +130,9 @@ class Server_Connection:
 
 
 class Web_Server(Server_Connection):
+	def __init__(self):
+		super().__init__('web')
+	
 	def continue_to_listen(self, server_socket):
 		if self.settings['USE_AUTO_ROUTER'] == True:
 			self.use_router()
@@ -137,29 +143,32 @@ class Web_Server(Server_Connection):
 				with client_socket:
 					request = client_socket.recv(1024)
 					method, path = self.parse_http_req(request.decode())
-					response = self.search_for_route(path)
-					print(response)
-					if response['status'] == 'OK':
-						output = response['data']
-					else:
-						output = response['message']
+					response = self.search_for_route(*self.get_protocol(path))
 
-					client_socket.send(self.build_response(response, output))
+
+
+					print(response)
+
+					client_socket.send(self.build_response(response))
 		except KeyboardInterrupt:
 			print('\nServer disconnected...')
 			self.kill_process_on_port(self.find_process_on_port())
 			self.close_socket()
+	
+	def get_protocol(self, route: str) -> Tuple[str, str]:
+		split_value = split_path(route)
+		if split_value[0] == 'api': protocol = 'api'
+		elif split_value[0] == 'idk': protocol = 'idk'
+		else: protocol = 'web'
+		return route, protocol
 		
+
 	def use_router(self):
 		self.router = Web_Router('application/main')
 		self.routes = self.router.routes
 
-	def search_for_route(self, route: str):
+	def search_for_route(self, route: str, protocol: str):
 		data = None
-		split_path = route.split('/')
-		if split_path[0] == '': split_path = split_path[1:]
-		protocol = 'web'
-		if split_path[0] == 'api': protocol = 'api'
 		if self.routes[protocol].get(route) is not None:
 			file_path = self.router.base_path + route + '/page.html'
 			with open(file_path, 'r') as file:
@@ -171,16 +180,28 @@ class Web_Server(Server_Connection):
 		}
 		else: return {
 			'status_code': 404,
-			'status': 'fail',
-			'message': 'Not Found!!.'
+			'status': 'NOT FOUND',
+			'message': 'Error 404: Requested Address Was Not Found'
 		}
 
-	def build_response(self, response, html):
+	def get_route_content():
+		pass
+
+	def build_response(self, response):
+		if response['status'] == 'OK':
+			output = response['data']
+		else:
+			output = response['message']
 		status = {
 			'code': response['status_code'],
 			'value': response['status']
 		}
-		return 'HTTP/1.1 {} {}\r\nContent-Length: {}\r\n\r\n{}'.format(status['code'], status['value'], len(html), html).encode('utf-8')
+		return 'HTTP/1.1 {} {}\r\nContent-Length: {}\r\n\r\n{}'.format(
+			status['code'],
+			status['value'],
+			len(output),
+			output
+		).encode('utf-8')
 
 	# def receive_request(self):
 		# print(x)
