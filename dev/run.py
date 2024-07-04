@@ -1,9 +1,7 @@
-from config import settings
-from data.json import to_json
 from server.server import Web_Server
+import logging
 
-# from routing.router import WebRouter
+logging.basicConfig(level=logging.ERROR)
 
-# app = Server_Connection('web')
 app = Web_Server('web')
 app.receive_request()

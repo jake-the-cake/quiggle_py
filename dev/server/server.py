@@ -1,8 +1,10 @@
 import os, subprocess
 from config import settings
+from core.load import load_settings
+
+import logging
 
 from socket import socket, AF_INET, SOCK_STREAM, error as socket_error, timeout as socket_timeout
-
 from routing.router import Web_Router
 
 
@@ -18,6 +20,7 @@ def if_has_value(check_value: any, default_value: any):
 
 class Server_Connection:
 	def __init__(self, type: Server_Type = 'web', port: int | None = None) -> None:
+		logging.basicConfig(level=logging.ERROR)
 		self.port = if_has_value(port, Server_Connection.default_ports[type])
 		self.host = '127.0.0.1'
 		if not self.create_socket(): return print('Could Not Connect')
@@ -98,26 +101,6 @@ class Server_Connection:
 		'admin': 1001
 	}
 
-def unstring_values(value):
-	if value == 'True' or value == 'False':
-		return bool(value)
-
-def load_settings(search_path = '/'):
-	settings = {}
-	main_folder_content = os.listdir(search_path)
-	if 'config' in main_folder_content:
-		config_path = search_path + '/config'
-		if 'settings.py' in os.listdir(config_path):
-			with open(config_path + '/settings.py', 'r') as file:
-				for line in file:
-					equal_sign_index = line.find('=')
-					if equal_sign_index == -1: continue
-					value = line[equal_sign_index + 1:].strip()
-					settings[line[:equal_sign_index].strip()] = unstring_values(value)
-	print(settings)
-	return settings
-	
-
 class Web_Server(Server_Connection):
 	def continue_to_listen(self, server_socket):
 		if self.settings['USE_AUTO_ROUTER'] == True:
@@ -125,7 +108,7 @@ class Web_Server(Server_Connection):
 		try:
 			while True:
 				client_socket, client_address = server_socket.accept()
-				print(f"Connection from {client_address}")
+				# print(f"Connection from {client_address}")
 				with client_socket:
 					request = client_socket.recv(1024)
 					method, path = self.parse_http_req(request.decode())
@@ -136,7 +119,7 @@ class Web_Server(Server_Connection):
 					else:
 						output = response['message']
 
-					client_socket.sendall(self.build_response(response['status_code'], len(output), output))
+					client_socket.send(self.build_response(response['status_code'], len(output), output))
 		except KeyboardInterrupt:
 			print('\nServer disconnected...')
 			self.kill_process_on_port(self.find_process_on_port())
@@ -147,6 +130,7 @@ class Web_Server(Server_Connection):
 		self.routes = self.router.routes
 
 	def search_for_route(self, route: str):
+		data = None
 		split_path = route.split('/')
 		if split_path[0] == '': split_path = split_path[1:]
 		protocol = 'web'
@@ -155,12 +139,12 @@ class Web_Server(Server_Connection):
 			file_path = self.router.base_path + route + '/page.html'
 			with open(file_path, 'r') as file:
 				data = file.read()
-				return {
-					'status_code': 200,
-					'status': 'ok',
-					'data': data
-				}
-		return {
+		if data: return {
+			'status_code': 200,
+			'status': 'ok',
+			'data': data
+		}
+		else: return {
 			'status_code': 404,
 			'status': 'fail',
 			'message': 'Not Found!!.'
