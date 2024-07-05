@@ -1,8 +1,7 @@
 from os.path import join, isdir
 from os import listdir
 
-def remove_text(original_value: str, remove_value: str) -> str:
-	return original_value.replace(remove_value, '')
+from ..core.utils.string import remove_text
 
 class Web_Router:
 
@@ -39,9 +38,3 @@ class Web_Router:
 
 	def scan_folder_for_trigger(self, search_path):
 		return listdir(search_path)
-
-
-
-
-
-# WebRouter('application/main')

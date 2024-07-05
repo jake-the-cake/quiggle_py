@@ -1,1 +1,1 @@
-USE_AUTO_ROUTER = 	True
+USE_AUTO_ROUTER = True

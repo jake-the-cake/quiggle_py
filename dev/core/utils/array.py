@@ -6,12 +6,16 @@ def trim_array(array, location = 'both'):
 	return array
 
 def remove_first_item_in_array(array):
-	print('first')
 	return array[1:]
 
 def remove_last_item_in_array(array):
-	print('last')
-	return array[:-2]
+	return array[:-1]
 
 def get_last_item_in_array(array):
 	return array[-1]
+
+class Array:
+	cut_first = remove_first_item_in_array
+	cut_last = remove_last_item_in_array
+	get_last = get_last_item_in_array
+	trim = trim_array

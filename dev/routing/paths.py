@@ -1,4 +1,4 @@
-from core.utils.array import trim_array
+from ..core.utils.array import trim_array
 
 def split_path(path):
 	return trim_array(path.split('/'))

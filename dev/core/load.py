@@ -1,5 +1,5 @@
 import os
-from core.utils.string import unstring_value
+from ..core.utils.string import unstring_value
 
 def load_settings(search_path = '/'):
 	settings = {}
