@@ -1,1 +1,1 @@
-from .server.server import Web_Server
+from .server.web_server import Web_Server
