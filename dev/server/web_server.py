@@ -6,6 +6,7 @@
 from ..routing.router import Web_Router
 from .server_connection import Server_Connection
 from .response import Response
+from .request import Request
 
 # python libraries
 import json
@@ -29,10 +30,11 @@ class Web_Server(Server_Connection):
 				client_socket, client_address = server_socket.accept()
 				print(f"Connection from {client_address}")
 				with client_socket:
-					request = client_socket.recv(1024)
+					# request = client_socket.recv(1024)
+					req = Request(client_socket, client_address)
 					
-					response = Response(request.decode(), self.router)
-					print(vars(response))
+					response = Response(req, self.router)
+					# print(vars(response))
 
 					# if is_found == True:
 					# 	response['data'] = self.get_data()[response['protocol']][method](request.decode())
@@ -42,7 +44,8 @@ class Web_Server(Server_Connection):
 					# else:
 					# 	response['status'] = self.use_response_status(404)
 					# 	response['message'] = 'Error 404: Requested Address Was Not Found'
-					client_socket.send(response.response.encode())
+					client_socket.send(response.x)
+					# client_socket.send(response.response.encode())
 		except (KeyboardInterrupt, socket_error) as e:
 			print('\nServer Disconnection: [{}]'.format(e))
 			self.kill_process_on_port(self.find_process_on_port())

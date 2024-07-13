@@ -7,7 +7,6 @@ from ..routing.paths import split_path
 from ..core.utils.array import Array
 
 # python libraries
-import time
 from typing import Tuple
 
 class Response:
@@ -16,14 +15,15 @@ class Response:
 			return {'error': 'Error'}
 		self.request = request
 		self.router = router
-		if not Array.all_values_equal([
-			self.read_headers(),
-			self.get_protocol(),
-			self.get_filename(),
-			self.get_route(),
-			self.set_response_headers(),
-			self.set_response(),
-		], True): raise self.caught_error
+		# if not Array.all_values_equal([
+		# 	self.read_headers(),
+		# 	self.get_protocol(),
+		# 	self.get_filename(),
+		# 	self.get_route(),
+		# 	self.set_response_headers(),
+		# 	self.set_response(),
+		# ], True): raise self.caught_error
+		self.x = b'HTTP/1.1 200 OK\r\nContent-Length: 1\r\n\r\nA'
 	
 	response_code = {
 		'200': 'OK',
