@@ -15,14 +15,15 @@ class Response:
 			return {'error': 'Error'}
 		self.request = request
 		self.router = router
-		# if not Array.all_values_equal([
-		# 	self.read_headers(),
-		# 	self.get_protocol(),
-		# 	self.get_filename(),
-		# 	self.get_route(),
-		# 	self.set_response_headers(),
-		# 	self.set_response(),
-		# ], True): raise self.caught_error
+		if not Array.all_values_equal([
+			self.read_headers(),
+			self.get_protocol(),
+			self.get_filename(),
+			self.get_route(),
+			self.set_response_headers(),
+			self.set_response(),
+		], True): raise self.caught_error
+		print(vars(self))
 		self.x = b'HTTP/1.1 200 OK\r\nContent-Length: 1\r\n\r\nA'
 	
 	response_code = {
@@ -84,7 +85,7 @@ class Response:
 			self.caught_error = e
 			return False
 
-	def get_protocol(self) -> Tuple[str, str]:
+	def get_protocol(self) -> bool:
 		protocol = Array.get_first(split_path(self.path))
 		if protocol == 'api':
 			self.protocol = 'api'
@@ -99,8 +100,10 @@ class Response:
 
 	def read_headers(self) -> bool:
 		try:
-			self.method, self.path, self.version = self.request.split('\r\n')[0].split(' ')
+			self.method, self.path, self.version = self.request.parse_req_line()
+			print(self.path)
 			return True
 		except Exception as e:
 			self.caught_error = e
+			print(e)
 			return False

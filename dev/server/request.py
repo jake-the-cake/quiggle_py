@@ -4,51 +4,37 @@
 
 # quiggle libraries
 from ..core.utils.object import init_multiple_values
+from .headers import Headers
 
 # python libraries
-from urllib.parse import urlparse, parse_qs
 
 class Request:
+
 	def __init__(self, connection, address) -> None:
 		self.connection = connection
 		self.address = address
-		self.headers = {}
 		init_multiple_values(self, [
 			'method', 'path', 'query', 'body'
 		], None)
-		print(vars(self))
 		try:
 			self.parse_request()
 		except Exception as e:
 			print('E: ' + str(e))
+		print(vars(self))
 
 	def parse_request(self):
 		request = self.connection.recv(1024).decode()
-		print(request)
-		print(self.connection)
-		# lines = request.split('\r\n')
-		# # Parse the request line
-		# request_line = lines[0].split(' ')
-		# # print(request_line)
-		# self.method = request_line[0]
-		# parsed_url = urlparse(request_line[1])
-		# self.path = parsed_url.path
-		# self.query = parse_qs(parsed_url.query)
-		
-		# # Parse the headers
-		# i = 1
-		# while lines[i] != '':
-		# 	header_line = lines[i].split(': ', 1)
-		# 	self.headers[header_line[0]] = header_line[1]
-		# 	i += 1
-		
-		# # Parse the body if there is one
-		# print(len(lines))
-		# self.body = '\r\n'.join(lines[i+1:])
+		self.req_line, self.headers, self.body = Headers(request).get_values()
+
+	def parse_req_line(self):
+		return self.req_line.split(' ')
 
 	def get_method(self):
 		return self.method
 
+	def get_version(self):
+		return self.version
+	
 	def get_path(self):
 		return self.path
 

@@ -83,7 +83,6 @@ class Server_Connection:
 		return True
 	
 	def retry_connection(self, attempts: int = 3) -> True_Or_None_Type:
-		print(attempts)
 		if attempts < 1: return None
 		pid = self.find_process_on_port()
 		if not pid: return True
