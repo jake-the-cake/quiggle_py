@@ -1,15 +1,16 @@
 from setuptools import setup, find_packages
+from quiggle.config.globals import VERSION_NUMBER
 
 setup(
 	name='quiggle',
-	version='0.1.0',
+	version=VERSION_NUMBER,
 	packages=find_packages(),
 	install_requires=[
 			'click'
 	],
 	entry_points={
 			'console_scripts': [
-					'rundev = dev.run:Web_Server' 
+					'createproject = quiggle.quiggle:create' 
 			],
 	},
 	author='Jason Thompson',
