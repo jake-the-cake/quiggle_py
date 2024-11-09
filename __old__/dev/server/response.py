@@ -23,8 +23,7 @@ class Response:
 			self.set_response_headers(),
 			self.set_response(),
 		], True): raise self.caught_error
-		print(vars(self))
-		self.x = b'HTTP/1.1 200 OK\r\nContent-Length: 1\r\n\r\nA'
+		# self.x = b'HTTP/1.1 200 OK\r\nContent-Length: 1\r\n\r\nA'
 	
 	response_code = {
 		'200': 'OK',
@@ -101,9 +100,7 @@ class Response:
 	def read_headers(self) -> bool:
 		try:
 			self.method, self.path, self.version = self.request.parse_req_line()
-			print(self.path)
 			return True
 		except Exception as e:
 			self.caught_error = e
-			print(e)
 			return False

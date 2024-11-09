@@ -9,8 +9,6 @@ setup(
 	],
 	entry_points={
 			'console_scripts': [
-					# 'your-command=your_package.module:function',
-					'update = update:update_folders',
 					'rundev = dev.run:Web_Server' 
 			],
 	},
