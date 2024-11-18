@@ -2,6 +2,7 @@
 from quiggle.docs import doc
 from quiggle.config.globals import VERSION_NUMBER
 from quiggle.tools.logs.colors import Colors
+from quiggle.tools.logs.presets import infolog
 
 ## gloabal imports
 import os
@@ -71,7 +72,8 @@ def create():
 
 		if not name == valid_name:
 			
-			print(Colors.BRIGHT_CYAN + 'A change was made to your project name' + Colors.RESET)
+			# print(Colors.BRIGHT_CYAN + 'A change was made to your project name' + Colors.RESET)
+			print(infolog('A change was made to your project name'))
 			agree = input('Use name "{}"? [y/n] '.format(valid_name))
 			
 			if not agree == 'y' and not agree == '':

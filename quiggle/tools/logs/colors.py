@@ -6,7 +6,7 @@ class Colors:
 	BACKGROUND_BLUE = '\033[44m'
 	BACKGROUND_MAGENTA = '\033[45m'
 	BACKGROUND_CYAN = '\033[46m'
-	BACKGROUND_LIGHT_GRAY = '\third-party033[47m'
+	BACKGROUND_LIGHT_GRAY = '\033[47m'
 	BACKGROUND_DARK_GRAY = '\033[100m'
 	BACKGROUND_BRIGHT_RED = '\033[101m'
 	BACKGROUND_BRIGHT_GREEN = '\033[102m'
@@ -34,6 +34,12 @@ class Colors:
 	WHITE = '\033[97m'
 
 	RESET = '\033[0m' # called to return to standard terminal text color
+
+	@staticmethod
+	def get_attribute(value: str) -> str:
+		value = value.upper().replace('-', '_')
+		if value in Colors.__dict__.keys():
+			return Colors.__dict__[value]
 
 def log_bug(message: str) -> None:
 	print(
