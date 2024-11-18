@@ -21,7 +21,8 @@ DOC = doc(
 '''
 
 MESSAGES = {
-	'welcome': '\nQuiggle Web Framework by PBJ (version {})'.format(VERSION_NUMBER)
+	'welcome': '\nQuiggle Web Framework by PBJ (version {})'.format(VERSION_NUMBER),
+	'project_name_change': infolog('A change was made to your project name')
 }
 
 ##
@@ -73,7 +74,7 @@ def create():
 		if not name == valid_name:
 			
 			# print(Colors.BRIGHT_CYAN + 'A change was made to your project name' + Colors.RESET)
-			print(infolog('A change was made to your project name'))
+			print(MESSAGES['project_name_change'])
 			agree = input('Use name "{}"? [y/n] '.format(valid_name))
 			
 			if not agree == 'y' and not agree == '':
