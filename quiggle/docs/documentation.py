@@ -15,9 +15,9 @@ class Documentation:
 		self.variables   = []
 		self.usage       = []
 
-		if 'usage' in kwargs:
+		# if 'usage' in kwargs:
 			
-			print(kwargs.get('usage'))
+		# 	print(kwargs.get('usage'))
 
 
 	def function(self, name: str = None, description: str = None, **kwargs):
