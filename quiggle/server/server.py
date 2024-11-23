@@ -9,6 +9,8 @@ import socket
 import threading
 from typing import Callable, List, Tuple
 
+mw_type = Callable[[socket.socket, Tuple[str, int]], None]
+mw_list_type = List[mw_type]
 
 class QuiggleServer:
 
@@ -21,7 +23,7 @@ class QuiggleServer:
         self.controller    = HTTPServerController(self.server_socket)
 
         ''' # MIDDLEWARE: need to impliment '''
-        self.middlewares: List[Callable[[socket.socket, Tuple[str, int]], None]] = []
+        self.middlewares: mw_list_type = []
 
     def start(self):
         ''' 
@@ -35,7 +37,7 @@ class QuiggleServer:
         """Accept and handle incoming connections."""
         try:
             while True:
-                client_socket, client_address = self.server_socket.accept_connections(self)
+                client_socket, client_address = self.server_socket.accept_connections() or (None, None)
                 print(f"New connection from {client_address}")
                 threading.Thread(
                     target=self._handle_connection, args=(client_socket, client_address)
@@ -54,7 +56,7 @@ class QuiggleServer:
         finally:
             client_socket.close()
 
-    def use(self, middleware: Callable[[socket.socket, Tuple[str, int]], None]):
+    def use(self, middleware: mw_type):
         '''
             Allows the user to bind middleware to the server.
             Middleware is a callable that takes (client_socket, client_address).
@@ -67,30 +69,3 @@ class QuiggleServer:
         if self.server_socket:
             self.server_socket.close_socket()
             print("Server stopped")
-
-    def handle_request(self, sock, addr):
-        print(sock, addr)
-
-
-
-# if __name__ == "__main__":
-    # app = QuiggleServer(name='Helium Rentals')
-    # print(app)
-    # Initialize controllers
-    # socket_controller = SocketController()
-    # http_server = HTTPServerController()
-
-    # Start the socket
-    # socket_controller.start_socket()
-
-    # # Define a connection handler
-    # def connection_handler(client_socket, client_address):
-    #     http_server.handle_request(client_socket, client_address)
-
-    # # Accept connections
-    # try:
-    #     socket_controller.accept_connections(connection_handler)
-    # except KeyboardInterrupt:
-    #     print("Shutting down server...")
-    # finally:
-    #     socket_controller.server_socket.close()
