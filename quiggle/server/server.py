@@ -21,7 +21,6 @@ class QuiggleServer:
 		self.name: str = name
 		self.middlewares: MiddlewareListType = []
 		self.server_socket: SocketController = SocketController(self.host, self.port)
-		# self.controller: HTTPServerController = HTTPServerController(self.server_socket)
 
 	''' Start the socket server and pass to accept connections. '''
 	def start(self) -> None:
