@@ -2,19 +2,19 @@
 from .headers import Headers
 from quiggle.tools.logs.presets import errorlog
 
-class DefaultPages:
+# class DefaultPages:
 	
-	@staticmethod
-	def _404():
-		with open('/static/404.html') as file:
-			return file.read()
+# 	@staticmethod
+# 	def _404():
+# 		with open('/static/404.html') as file:
+# 			return file.read()
 		
 
 class HTMLResponse(Headers):
 
-	DEFAULT_PAGES = {
-		404: DefaultPages._404()
-	}
+	# DEFAULT_PAGES = {
+		# 404: DefaultPages._404()
+	# }
 
 	def __init__(self, client_socket):
 		super().__init__()
@@ -35,7 +35,7 @@ class HTMLResponse(Headers):
 			# Get the status message
 			status_message = Headers.get_status_message(self.status_code)
 			self.set('Content-Length', len(self.body))
-			self.body = self.DEFAULT_PAGES[self.status_code]
+			# self.body = self.DEFAULT_PAGES[self.status_code]
 
 			# Format headers
 			header_str = self.format()
