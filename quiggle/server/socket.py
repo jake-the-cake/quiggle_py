@@ -1,13 +1,13 @@
 ## local imports
 from quiggle.config import globals
+from .prompts import MESSAGES
 
 ## global imports
 import socket
-import threading
 
 class SocketController:
 
-    def __init__(self, host=globals.SERVER_HOST, port=globals.SERVER_PORT):
+    def __init__(self, host: str = globals.SERVER_HOST, port: int = globals.SERVER_PORT):
         self.host          = host
         self.port          = port
         self.server_socket = None
@@ -29,4 +29,4 @@ class SocketController:
     def close_socket(self):
         if self.server_socket:
             self.server_socket.close()
-            print("Socket closed")
+            print(MESSAGES['closed']('Socket'))

@@ -49,6 +49,7 @@ class QuiggleServer:
     def _handle_connection(self, client_socket: socket.socket, client_address: Tuple[str, int]):
         """Handles a single connection."""
         try:
+            self.http_handler(client_socket, client_address)
             for middleware in self.middlewares:
                 middleware(client_socket, client_address)
         except Exception as e:
@@ -69,3 +70,38 @@ class QuiggleServer:
         if self.server_socket:
             self.server_socket.close_socket()
             print("Server stopped")
+    
+    def http_handler(self, client_socket, client_address):
+        """Middleware to handle HTTP requests."""
+        try:
+            data = client_socket.recv(1024).decode()
+            if data:
+                # Extract the request path (e.g., GET /favicon.ico)
+                request_line = data.split("\r\n")[0]
+                method, path, _ = request_line.split(" ")
+
+                # Log only the first request from the client
+                if path != "/favicon.ico":
+                    print(f"HTTP Request from {client_address}: {request_line}")
+
+                # Generate a response
+                if path == "/favicon.ico":
+                    # Send an empty response for favicon.ico requests
+                    response = (
+                        "HTTP/1.1 204 No Content\r\n"
+                        "Connection: close\r\n\r\n"
+                    )
+                else:
+                    response_body = "Hello, World!"
+                    response = (
+                        "HTTP/1.1 200 OK\r\n"
+                        "Content-Type: text/plain\r\n"
+                        f"Content-Length: {len(response_body)}\r\n"
+                        "Connection: close\r\n\r\n"
+                        f"{response_body}"
+                    )
+                client_socket.sendall(response.encode())
+        except Exception as e:
+            print(f"Error handling HTTP request: {e}")
+        finally:
+            client_socket.close()

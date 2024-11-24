@@ -2,9 +2,13 @@
 from quiggle.tools.logs.presets import questionlog
 from quiggle.config import globals
 
-def connected(host: str, port: int, name: str):
-	return '{} is live on {}:{}...\n\tPowered by {}.'.format(name, host, port, questionlog('Quiggle v{}'.format(globals.VERSION_NUMBER)))
+def connected(host: str, port: int, name: str) -> str:
+	return f'\n\t{ name } is live on { host }:{ port }\n\t--> [Powered by { questionlog(f'Quiggle v{ globals.VERSION_NUMBER }') }]\n'
+
+def closed(connection: str) -> str:
+	return f'{ connection } connection closed.'
 
 MESSAGES = {
-	'connected': connected
+	'connected': connected,
+	'closed': closed
 }
