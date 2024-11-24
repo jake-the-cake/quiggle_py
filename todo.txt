@@ -1,1 +1,6 @@
+- Response class -> Render HTML
+- Response class -> JSon response
+- Request class -> Web token
 - QuiggleServer class -> MIDDLEWARE
+- SocketController class -> Kill port
+- SocketController class -> Retry connection
