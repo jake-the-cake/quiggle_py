@@ -11,23 +11,70 @@ class HTMLInjector:
         Initialize with a dictionary of variables.
         :param variables: Dict containing variable names and their values.
         """
-        self.variables = variables or {}
-        self.tags      = {}
+        self.variables     = variables or {}
+        self.instances     = {}
+        self.position: int = 0
+        self.hold_pos: int = 0
+        self.tags          = [
+                                'use'
+                            ]
 
-    def find_tag(self, tag_name: str):
-        pass
+    def get_char(self) -> str:
+        return self.html['raw'][self.position]
 
+    def get_next_char(self) -> str:
+        if len(self.html['raw']) - 1 > self.position:
+            return self.html['raw'][self.position + 1]
+        return ' '
+    
+    def increment_positions(self) -> None:
+        if len(self.html['raw']) - 1 > self.position:
+            self.position += 1
+            self.hold_pos = self.position
+
+    def find_open_tag(self):
+        if not self.get_char() == '<':
+            return self.increment_positions()
+        self.find_next_blank()
+
+    def find_next_blank(self):
+        self.position += 1
+        if self.get_char() == '>':
+            return self.increment_positions() 
+        if self.get_char() != ' ':
+            return self.find_next_blank()
+        tag = self.html['raw'][self.hold_pos + 1 : self.position]
+        if tag in self.tags:
+            # if tag not in self.instances.keys():
+                # self.instances[tag] = []
+                # pass
+            print(tag)
+            # self.find_closing_tag(tag)
+        self.increment_positions()
+
+    def find_closing_tag(self, tag: str):
+        self.position += 1
+        if self.get_char() == '/' and self.get_next_char == '>':
+            # print(self.html['raw'][self.hold_pos : self.position])
+            # self.instances[tag].append(self.html['raw'][self.hold_pos : self.position])
+            return
+        self.find_closing_tag(tag)
+
+    def find_tags(self) -> None:
+        while self.position < len(self.html['raw']):
+            self.find_open_tag()
 
     def inject(self, html: str) -> None:
-        self.html = html
         """
         Parse and replace all <insert> tags in the provided HTML.
         :param html: The input HTML string.
         :return: The HTML with injected content.
         """
-        self.find_tag('use')
-                
 
+
+        self.html = html
+        self.find_tags()
+        print(self.instances)
 
         '''print(html)
         def replace_insert(match):

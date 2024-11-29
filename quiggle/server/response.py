@@ -25,7 +25,6 @@ class HTMLResponse(Headers):
 
 	''' Set the body data for both raw and final '''
 	def init_body(self, value: str) -> None:
-		print(value)
 		self.body['raw'] = value
 		self.body['final'] = value
 
