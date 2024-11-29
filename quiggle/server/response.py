@@ -10,7 +10,7 @@ class HTMLResponse(Headers):
 		super().__init__()
 		self.client_socket = client_socket
 		self.status_code   = 500
-		self.body          = ''
+		self.body          = { 'raw': '', 'final': '' }
 		# Default headers
 		self.set("Content-Type", "text/html")
 		self.set("Connection", "close")
@@ -23,44 +23,41 @@ class HTMLResponse(Headers):
 	def render_html():
 		pass
 
+	''' Set the body data for both raw and final '''
+	def init_body(self, value: str) -> None:
+		print(value)
+		self.body['raw'] = value
+		self.body['final'] = value
+
+
 	''' Sends the HTTP response. '''
 	def send(self):
 		try:
 			# Get the status message
-			status_message = Headers.get_status_message(self.status_code)
 			
 			# temp injections
 			self.status_code = 404
-			self.body = self.use_default_page(self.status_code)
-
-			# injector = HTMLInjector({
-			# 	'status_code': 'y'
-			# })
-
-			# print(injector.inject(self.body))
+			status_message = Headers.get_status_message(self.status_code)
+			self.init_body(self.use_default_page(self.status_code))
 
 			# inject content and variables
 			injector = HTMLInjector({
-				'status_code': 'y',
-				# 'status_code': str(self.status_code),
-				'status_message': 'n'
-				# 'status_message': self.STATUS_MESSAGES[str(self.status_code)]
+				'status_code': str(self.status_code),
+				'status_message': status_message
 			})
-			# print(self.body)
-			self.body = injector.inject(self.body)
-			# print(self.body)
+			injector.inject(self.body)
 
 			# Format headers
-			self.set('Content-Length', len(self.body))
+			self.set('Content-Length', len(self.body['final']))
 			header_str = self.format()
 
 			# Construct the response
 			response = (
-					f'HTTP/1.1 {self.status_code} {status_message}\r\n'
-					f'{header_str}\r\n\r\n'
-					f'{self.body}'
+					f'HTTP/1.1 { self.status_code } { status_message }\r\n'
+					f'{ header_str }\r\n\r\n'
+					f'{ self.body['final'] }'
 			)
-			print(response)
+			# print(response)
 			self.client_socket.sendall(response.encode())
 		except Exception as e:
 			print(errorlog('Error sending response:'), e)

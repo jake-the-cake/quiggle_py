@@ -4,7 +4,7 @@ class HTMLInjector:
     """HTML injector system for parsing and injecting content into custom <insert> tags."""
     
     # Regex for parsing <insert> tags
-    INSERT_REGEX = re.compile(r"<insert\s+(\w+)(?:\s+or=['\"](.*?)['\"])?(?:\s+and=['\"](.*?)['\"])?\s*\/?>")
+    INSERT_REGEX = re.compile(r"<use\s+(\w+)(?:\s+or=['\"](.*?)['\"])?(?:\s+and=['\"](.*?)['\"])?\s*\/?>")
     
     def __init__(self, variables=None):
         """
@@ -12,14 +12,24 @@ class HTMLInjector:
         :param variables: Dict containing variable names and their values.
         """
         self.variables = variables or {}
-        print(self.variables)
-    
-    def inject(self, html: str) -> str:
+        self.tags      = {}
+
+    def find_tag(self, tag_name: str):
+        pass
+
+
+    def inject(self, html: str) -> None:
+        self.html = html
         """
         Parse and replace all <insert> tags in the provided HTML.
         :param html: The input HTML string.
         :return: The HTML with injected content.
         """
+        self.find_tag('use')
+                
+
+
+        '''print(html)
         def replace_insert(match):
             # Extract attributes from the regex match
             variable_name = match.group(1)  # e.g., status_code
@@ -37,8 +47,7 @@ class HTMLInjector:
             return injection
         
         # Replace all matches in the HTML
-        return self.INSERT_REGEX.sub(replace_insert, html)
-
+        return''' # self.INSERT_REGEX.sub(replace_insert, html)
 
 
 # Example Usage
