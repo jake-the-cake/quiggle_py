@@ -33,14 +33,22 @@ class HTMLResponse(Headers):
 			self.status_code = 404
 			self.body = self.use_default_page(self.status_code)
 
-			# inject content and variables
 			# injector = HTMLInjector({
-			# 	'status_code': self.status_code,
-			# 	'status_message': self.STATUS_MESSAGES[str(self.status_code)]
+			# 	'status_code': 'y'
 			# })
+
+			# print(injector.inject(self.body))
+
+			# inject content and variables
+			injector = HTMLInjector({
+				'status_code': 'y',
+				# 'status_code': str(self.status_code),
+				'status_message': 'n'
+				# 'status_message': self.STATUS_MESSAGES[str(self.status_code)]
+			})
 			# print(self.body)
-			# self.body = injector.inject(self.body)
-			print(self.body)
+			self.body = injector.inject(self.body)
+			# print(self.body)
 
 			# Format headers
 			self.set('Content-Length', len(self.body))

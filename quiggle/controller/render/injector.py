@@ -12,6 +12,7 @@ class HTMLInjector:
         :param variables: Dict containing variable names and their values.
         """
         self.variables = variables or {}
+        print(self.variables)
     
     def inject(self, html: str) -> str:
         """
