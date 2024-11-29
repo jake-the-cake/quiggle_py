@@ -4,8 +4,17 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Page not found</title>
+	<style>
+		.red {
+			background-color: hsl(10, 80%, 60%);
+		}
+	</style>
 </head>
 <body>
-	There is no page at this address.
+	<h1>Error:</h1>
+	<insert status_code or='999' and=status_message />
+	<div class="red">
+		404: Page Not Found
+	</div>
 </body>
 </html>

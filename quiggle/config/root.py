@@ -4,7 +4,5 @@ import quiggle
 ## global imports
 import os
 
-def get_root_dir():
+def get_quiggle_dir():
     return os.path.dirname(quiggle.__file__)
-
-root_dir = get_root_dir()
