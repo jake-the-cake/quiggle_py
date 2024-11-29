@@ -1,5 +1,6 @@
 class Headers:
-	# Common HTTP status messages
+	
+	''' Common HTTP status messages. '''
 	STATUS_MESSAGES = {
 		200: "OK",
 		201: "Created",
@@ -15,15 +16,15 @@ class Headers:
 		self.headers = {}
 			
 	''' Sets a header key-value pair. '''
-	def set(self, key: str, value: str):
+	def set(self, key: str, value: str) -> None:
 		self.headers[key] = value
 
-	''' Gets the value of a header key.'''
+	''' Gets the value of a header key. '''
 	def get(self, key: str) -> str:
 		return self.headers.get(key, "")
 
 	''' Removes a header. '''
-	def remove(self, key: str):
+	def remove(self, key: str) -> None:
 		if key in self.headers:
 			del self.headers[key]
 

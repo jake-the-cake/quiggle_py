@@ -1,5 +1,6 @@
 ## local imports
 from quiggle.config import globals
+from quiggle.tools.logs.presets import errorlog
 from .prompts import MESSAGES
 
 ## global imports
@@ -38,7 +39,7 @@ class SocketController:
 				client_socket, client_address = self.server_socket.accept()
 				return client_socket, client_address
 			except Exception as e:
-				print(f"Error accepting connections: {e}")
+				print(errorlog(f'Error accepting connections:'), e)
 
 	''' Start listening on specified port '''
 	def close_socket(self) -> None:

@@ -4,7 +4,7 @@ from .response import HTMLResponse
 from quiggle.tools.logs.presets import errorlog, infolog, labellog
 
 class HTTPServerController:
-    def __init__(self, socket_controller):
+    def __init__(self):
         self.request: Request | None = None
         self.response                = None
 
@@ -12,6 +12,7 @@ class HTTPServerController:
     def handle_request(self, client_socket, client_address):
         self.client_address = client_address
         self.client_socket  = client_socket
+        print(f"New connection from {self.client_address}")
         try:
             data = self.client_socket.recv(1024).decode()
             if data:
@@ -26,8 +27,9 @@ class HTTPServerController:
         print(labellog(
             f'RESPONSE -> { self.client_address[0] }:'),
             self.response.status_code,
-            self.response.STATUS_MESSAGES[self.response.status_code] or 'Unknown' )
+            self.response.STATUS_MESSAGES[self.response.status_code] or 'Unknown'
+        )
 
-    ''' Send final response over'''
+    ''' Send final response over. '''
     def send(self):
         self.response.send()

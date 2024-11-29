@@ -33,7 +33,6 @@ class QuiggleServer:
 		try:
 			while True:
 				client_socket, client_address = self.server_socket.accept_connections()
-				print(f"New connection from {client_address}")
 				threading.Thread(
 					target=self._handle_connection, args=(client_socket, client_address)
 				).start()
@@ -43,7 +42,7 @@ class QuiggleServer:
 
 	''' Handles a single connection. '''
 	def _handle_connection(self, client_socket: socket.socket, client_address: Tuple[str, int]):
-		controller: HTTPServerController = HTTPServerController(self.server_socket)
+		controller: HTTPServerController = HTTPServerController()
 		try:
 			controller.handle_request(client_socket, client_address)
 			
