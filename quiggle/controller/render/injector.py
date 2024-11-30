@@ -44,35 +44,35 @@ class HTMLInjector:
 
 	def get_next_char(self) -> str:
 		if self.is_position_lt_len():
-				return self.html['raw'][self.position + 1]
+			return self.html['raw'][self.position + 1]
 		return self.get_char()
 	
 	def increment_positions(self) -> None:
-			if self.is_position_lt_len():
-					self.position += 1
-					self.hold_pos = self.position
+		if self.is_position_lt_len():
+			self.position += 1
+			self.hold_pos = self.position
 
 	def find_tags(self) -> None:
-			while self.position < len(self.html['raw']) - 1:
-					self.find_open_tag()
+		while self.position < len(self.html['raw']) - 1:
+			self.find_open_tag('<')
 
-	def find_open_tag(self):
-			if not self.get_char() == '<':
-					return self.increment_positions()
-			self.find_next_blank()
+	def find_open_tag(self, tag: str) -> None:
+		if not self.get_char() == tag:
+			return self.increment_positions()
+		self.find_next_blank()
 
 	def find_next_blank(self):
-			self.position += 1
-			if self.get_char() == '>':
-					return self.increment_positions() 
-			if self.get_char() != ' ':
-					return self.find_next_blank()
-			tag = self.html['raw'][self.hold_pos + 1 : self.position]
-			if tag in self.tags.keys():
-					if tag not in self.instances.keys():
-							self.instances[tag] = []
-					return self.find_closing_tag(tag)
-			return self.increment_positions()
+		self.position += 1
+		if self.get_char() == '>':
+			return self.increment_positions() 
+		if self.get_char() != ' ':
+			return self.find_next_blank()
+		tag = self.html['raw'][self.hold_pos + 1 : self.position]
+		if tag in self.tags.keys():
+			if tag not in self.instances.keys():
+				self.instances[tag] = []
+			return self.find_closing_tag(tag)
+		return self.increment_positions()
 
 	def find_closing_tag(self, tag: str):
 		self.position += 1
