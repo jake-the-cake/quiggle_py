@@ -41,7 +41,7 @@ class HTMLResponse(Headers):
 
 			# inject content and variables
 			injector = HTMLInjector({
-				'status_code': str(self.status_code),
+				# 'status_code': str(self.status_code),
 				'status_message': status_message
 			})
 			injector.inject(self.body)
