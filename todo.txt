@@ -5,4 +5,3 @@
 - SocketController class -> Kill port
 - SocketController class -> Retry connection
 - CLI to auto update version
-- HTMLInjector class -> find tags

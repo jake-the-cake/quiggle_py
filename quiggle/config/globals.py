@@ -1,6 +1,6 @@
 from quiggle.config.root import get_quiggle_dir
 
-VERSION_NUMBER = '0.2.1'
+VERSION_NUMBER = '0.2.2'
 QUIGGLE_DIR = get_quiggle_dir()
 
 # move to server.config module?

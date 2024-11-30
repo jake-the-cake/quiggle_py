@@ -17,7 +17,7 @@ class HTMLResponse(Headers):
 
 	''' Returns html from file. '''
 	def use_default_page(self, code: int = 999) -> str:
-		with open(globals.QUIGGLE_DIR + f'/static/{ code }.html') as file:
+		with open(globals.QUIGGLE_DIR + f'/static/status.html') as file:
 			return file.read().replace('\n', '').replace('\t', '')
 
 	def render_html():
@@ -41,7 +41,7 @@ class HTMLResponse(Headers):
 
 			# inject content and variables
 			injector = HTMLInjector({
-				# 'status_code': str(self.status_code),
+				'status_code': str(self.status_code),
 				'status_message': status_message
 			})
 			injector.inject(self.body)

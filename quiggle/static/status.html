@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Page not found</title>
+	<title><use status_message or='Error' /></title>
 	<style>
 		.red {
 			background-color: hsl(10, 80%, 60%);
@@ -13,7 +13,7 @@
 <body>
 	<h1>Error:</h1>
 	<div class="red">
-		<use status_code or='999' and=status_message />
+		<use status_code or='999' and=status_message or='Unknown Error' />
 	</div>
 </body>
 </html>
