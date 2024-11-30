@@ -16,7 +16,7 @@ class HTMLResponse(Headers):
 		self.set("Connection", "close")
 
 	''' Returns html from file. '''
-	def use_default_page(self, code: int = 999) -> str:
+	def use_default_page(self) -> str:
 		with open(globals.QUIGGLE_DIR + f'/static/status.html') as file:
 			return file.read().replace('\n', '').replace('\t', '')
 
@@ -32,18 +32,16 @@ class HTMLResponse(Headers):
 	''' Sends the HTTP response. '''
 	def send(self):
 		try:
-			# Get the status message
-			
-			# temp injections
-			self.status_code = 404
+			self.status_code = 200
 			status_message = Headers.get_status_message(self.status_code)
 			self.init_body(self.use_default_page(self.status_code))
 
 			# inject content and variables
-			injector = HTMLInjector({
+			variables = {
 				'status_code': str(self.status_code),
 				'status_message': status_message
-			})
+			}
+			injector = HTMLInjector(variables)
 			injector.inject(self.body)
 
 			# Format headers
@@ -56,7 +54,7 @@ class HTMLResponse(Headers):
 					f'{ header_str }\r\n\r\n'
 					f'{ self.body['final'] }'
 			)
-			# print(response)
+
 			self.client_socket.sendall(response.encode())
 		except Exception as e:
 			print(errorlog('Error sending response:'), e)

@@ -24,12 +24,12 @@ class HTTPServerController:
     ''' Generate an http response. '''
     def generate_response(self):
         self.response = HTMLResponse(self.client_socket)
+
+    ''' Send final response over. '''
+    def send(self):
+        self.response.send()
         print(labellog(
             f'RESPONSE -> { self.client_address[0] }:'),
             self.response.status_code,
             self.response.STATUS_MESSAGES[self.response.status_code] or 'Unknown'
         )
-
-    ''' Send final response over. '''
-    def send(self):
-        self.response.send()

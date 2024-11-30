@@ -22,7 +22,6 @@ class HTMLInjector:
 				return string[1:-1]
 
 		def use_properties(attributes):
-			print(attributes)
 			if len(attributes) < 2: return
 			if attributes[0].lower() == 'or':
 				if values[-1] == '':
