@@ -5,8 +5,8 @@ from quiggle.tools.logs.presets import errorlog, infolog, labellog
 
 class HTTPServerController:
     def __init__(self):
-        self.request: Request | None = None
-        self.response                = None
+        self.request:       Request | None = None
+        self.response: HTMLResponse | None = None
 
     ''' Parse request data. '''
     def handle_request(self, client_socket, client_address):
@@ -23,7 +23,7 @@ class HTTPServerController:
 
     ''' Generate an http response. '''
     def generate_response(self):
-        self.response = HTMLResponse(self.client_socket)
+        self.response = HTMLResponse(self.client_socket, self.request)
 
     ''' Send final response over. '''
     def send(self):

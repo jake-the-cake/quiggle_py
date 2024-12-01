@@ -3,43 +3,53 @@ from quiggle.tools.logs.presets import errorlog
 
 class Request:
 
+	'''
+		This class parses raw HTTP request data and extracts key components such as headers, HTTP method, request path, and the request body. It also provides functionality for handling authentication tokens, if included in the headers.
+	'''
+
 	def __init__(self, raw_data: str):
-		
-		# init vars
+
+		# Initialize request variables
+		self.headers:      dict = {}
 		self.method: str | None = None
-		self.path: str | None   = None
-		self.token: str | None  = None
-		self.body: str | None   = None
-		
-		# parse request to fill headers
-		self.headers = {}
+		self.path:   str | None = None
+		self.token:  str | None = None
+		self.body:   str | None = None
+
+		# Parse the raw HTTP request data to populate instance attributes
 		self._parse_request(raw_data)
 
-	''' Parses raw HTTP request data. '''
+	''' Parses HTTP headers from the request data. '''
+	def _parse_headers(self, header_lines) -> None:
+		# Loop through each header line and extract key-value pairs
+		for line in header_lines:
+			if line == "":
+				break
+			key, value = line.split(":", 1)
+			self.headers[key.strip()] = value.strip()
+
+	''' Extracts the body of the request if present. '''
+	def _parse_body(self, body_index: int, lines: list) -> None:
+		if body_index < len(lines):
+			self.body = "\r\n".join(lines[body_index:])
+
+	''' Parses the raw HTTP request data and populates attributes. '''
 	def _parse_request(self, raw_data: str):
 		try:
+			# Split raw data into lines
 			lines = raw_data.split("\r\n")
-		
-			# Parse the request line (e.g., GET / HTTP/1.1)
-			request_line = lines[0].split()
-			self.method, self.path, _ = request_line
+			
+			# Parse the request line (e.g., "GET /index.html HTTP/1.1")
+			self.method, self.path, _ = lines[0].split()
+			
+			# Parse headers and body
+			self._parse_headers(lines[1:])
+			self._parse_body(lines.index("") + 1, lines)
 
-			# Parse headers
-			header_lines = lines[1:]
-			for line in header_lines:
-				if line == "":  # End of headers
-					break
-				key, value = line.split(":", 1)
-				self.headers[key.strip()] = value.strip()
+			# TODO: Extract token from Authorization header (if present)
+				# auth_header = self.headers.get("Authorization", "")
+				# if auth_header.startswith("Bearer "):
+				# 	self.token = auth_header.split(" ")[1]
 
-			# Extract body if present
-			body_index = lines.index("") + 1
-			if body_index < len(lines):
-				self.body = "\r\n".join(lines[body_index:])
-
-			# Extract token from Authorization header (if present)
-			auth_header = self.headers.get("Authorization", "")
-			if auth_header.startswith("Bearer "):
-				self.token = auth_header.split(" ")[1]
 		except Exception as e:
 			print(errorlog('Error parsing request:', e))

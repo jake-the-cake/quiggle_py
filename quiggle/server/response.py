@@ -6,11 +6,12 @@ from quiggle.controller.render.injector import HTMLInjector
 
 class HTMLResponse(Headers):
 
-	def __init__(self, client_socket):
+	def __init__(self, client_socket, request):
 		super().__init__()
-		self.client_socket = client_socket
-		self.status_code   = 500
-		self.body          = { 'raw': '', 'final': '' }
+		self.client_socket: any = client_socket
+		self.request:       any = request
+		self.status_code:   int = 500
+		self.body:         dict = { 'raw': '', 'final': '' }
 		# Default headers
 		self.set("Content-Type", "text/html")
 		self.set("Connection", "close")
@@ -34,7 +35,7 @@ class HTMLResponse(Headers):
 		try:
 			self.status_code = 200
 			status_message = Headers.get_status_message(self.status_code)
-			self.init_body(self.use_default_page(self.status_code))
+			self.init_body(self.use_default_page())
 
 			# inject content and variables
 			variables = {
