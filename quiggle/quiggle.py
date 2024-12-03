@@ -83,8 +83,8 @@ def create():
 		}],
 		'templates': ['index.html'],
 		'models': [],
-		'router': [{'contact': []}, 'view.py', 'api.py'],
-		'__main__': ['app.py']
+		'router': [{'contact': ['view.py', 'api.py']}, 'view.py', 'api.py'],
+		'__main__': ['app.py', 'config.py']
 	}
 
 	# add folders and files

@@ -1,13 +1,11 @@
 ## local imports
-from quiggle.config import globals
+from quiggle.server import config
+from quiggle.server.prompts import MESSAGES
 from quiggle.tools.logs.presets import errorlog
-from .prompts import MESSAGES
+from quiggle.types.server import SocketAddressType, ClientSocketType
 
 ## global imports
 import socket
-from typing import Tuple
-
-sock_addr_type = Tuple[socket.socket, Tuple[str, int]]
 
 class SocketController:
 
@@ -17,10 +15,10 @@ class SocketController:
 		handling both HTTP requests and WebSocket connections.
 	'''
 
-	def __init__(self, host: str = globals.SERVER_HOST, port: int = globals.SERVER_PORT):
-		self.host: str     = host
-		self.port: int     = port
-		self.server_socket = None
+	def __init__(self, host: str = config.SERVER_HOST, port: int = config.SERVER_PORT):
+		self.host:                       str = host
+		self.port:                       int = port
+		self.server_socket: ClientSocketType = None
 
 	''' Create a new socket instance '''
 	def create_socket(self) -> None:
@@ -33,7 +31,7 @@ class SocketController:
 			self.server_socket.listen(5)
 
 	''' Accept incoming connections and return data '''
-	def accept_connections(self) -> None | sock_addr_type:
+	def accept_connections(self) -> None | SocketAddressType:
 		while True:
 			try:
 				client_socket, client_address = self.server_socket.accept()

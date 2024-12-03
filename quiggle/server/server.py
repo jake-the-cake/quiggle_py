@@ -1,21 +1,17 @@
 ## local imports
-from .controller import HTTPServerController
-from .socket import SocketController
-from .prompts import MESSAGES
-from quiggle.config import globals
+from quiggle.server import config
+from quiggle.server.controllers.controller import HTTPServerController
+from quiggle.server.controllers.socket import SocketController
+from quiggle.server.prompts import MESSAGES
 from quiggle.tools.logs.presets import errorlog
+from quiggle.types.server import MiddlewareListType, MiddlewareType, ClientAddressType, ClientSocketType
 
 ## global imports
-import socket
 import threading
-from typing import Callable, List, Tuple
-
-MiddlewareType = Callable[[socket.socket, Tuple[str, int]], None]
-MiddlewareListType = List[MiddlewareType]
 
 class QuiggleServer:
 
-	def __init__(self, host: str = globals.SERVER_HOST, port: int = globals.SERVER_PORT, name: str = None):
+	def __init__(self, host: str = config.SERVER_HOST, port: int = config.SERVER_PORT, name: str = None):
 		self.host: str = host
 		self.port: int = port
 		self.name: str = name
@@ -41,23 +37,22 @@ class QuiggleServer:
 			self.stop()
 
 	''' Handles a single connection. '''
-	def _handle_connection(self, client_socket: socket.socket, client_address: Tuple[str, int]):
-		controller: HTTPServerController = HTTPServerController()
+	def _handle_connection(self, client_socket: ClientSocketType, client_address: ClientAddressType):
 		try:
-			controller.handle_request(client_socket, client_address)
+			# create new controller instance
+			controller: HTTPServerController = HTTPServerController(client_socket, client_address)
 			
-			# -> TODO: Route
-			# -> TODO: Determine API vs HTML
-			
-			controller.generate_response()
-
-			# -> TODO: MIDDLEWARE: need to impliment
-			
+			controller.handle_request()
+			controller.choose_protocol()
+			controller.handle_routing()
+			print(client_socket.__dir__)
 			for middleware in self.middlewares:
 				middleware(controller.request, controller.response)
+			
 			controller.send()
 		except Exception as e:
 			print(errorlog(f'Error handling connection from { client_address[0] }:'), e)
+			raise e
 		finally:
 			client_socket.close()
 

@@ -5,3 +5,6 @@
 - SocketController class -> Kill port
 - SocketController class -> Retry connection
 - CLI to auto update version
+- API protocol in HTTPServerController
+- Injector class -> component tag
+- Toolkit (get_elapsed_time in HTTPController)

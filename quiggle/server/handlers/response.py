@@ -2,7 +2,7 @@
 from .headers import Headers
 from quiggle.tools.logs.presets import errorlog
 from quiggle.config import globals
-from quiggle.controller.render.injector import HTMLInjector
+from quiggle.server.render.injector import HTMLInjector
 
 class HTMLResponse(Headers):
 
@@ -33,9 +33,8 @@ class HTMLResponse(Headers):
 	''' Sends the HTTP response. '''
 	def send(self):
 		try:
-			self.status_code = 200
 			status_message = Headers.get_status_message(self.status_code)
-			self.init_body(self.use_default_page())
+			# self.init_body(self.use_default_page())
 
 			# inject content and variables
 			variables = {
