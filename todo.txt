@@ -1,10 +1,15 @@
-- Response class -> Render HTML
-- Response class -> JSon response
-- Request class -> Web token
-- QuiggleServer class -> MIDDLEWARE
-- SocketController class -> Kill port
-- SocketController class -> Retry connection
-- CLI to auto update version
-- API protocol in HTTPServerController
-- Injector class -> component tag
-- Toolkit (get_elapsed_time in HTTPController)
+/* High */
+.Response > json response
+.HTTPController > API protocol
+.Injector > component tag
+
+/* Mid */
+CLI to auto update version
+Toolkit > get_elapsed_time in HTTPController
+QuiggleServer class > MIDDLEWARE
+
+/* Low */
+Request class > Web token
+SocketController class > Kill port
+SocketController class > Retry connection
+{ display: block; }
