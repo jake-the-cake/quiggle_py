@@ -2,14 +2,16 @@
 .Response > json response
 .HTTPController > API protocol
 .Injector > component tag
+.CLI > version auto update
 
 /* Mid */
-CLI to auto update version
-Toolkit > get_elapsed_time in HTTPController
-QuiggleServer class > MIDDLEWARE
+.Toolkit > create and add get_elapse_time from HTTPController
+.QuiggleServer > middleware
 
 /* Low */
-Request class > Web token
-SocketController class > Kill port
-SocketController class > Retry connection
-{ display: block; }
+.Request > web token
+.Socket > kill port
+.Socket > retry connection
+.Documentation > work on
+
+/* stop vs code lint error */ { all: auto }
