@@ -10,7 +10,8 @@ setup(
 	],
 	entry_points={
 			'console_scripts': [
-					'createproject = quiggle.quiggle:create' 
+					'createproject = quiggle.quiggle:create',
+                    'quiggle = quiggle.__main__:cli'
 			],
 	},
 	author='Jason Thompson',

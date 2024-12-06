@@ -1,9 +1,12 @@
 ## local imports
-from quiggle.quiggle import main
 from quiggle.server import server
+from quiggle.cli.version import update_version
+
+def cli():
+    print('cli')
+    update_version()
 
 if __name__ == '__main__':
-    # main()
     app = server.QuiggleServer(name = 'Angieland')
     try:
         app.start()
