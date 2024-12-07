@@ -7,6 +7,7 @@
 /* Mid */
 .Toolkit > create and add get_elapse_time from HTTPController
 .QuiggleServer > middleware
+.CLI > help menu
 
 /* Low */
 .Request > web token

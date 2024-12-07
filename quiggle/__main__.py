@@ -1,11 +1,9 @@
 ## local imports
 from quiggle.server import server
-from quiggle.cli.version import update_version
+from quiggle.cli.version import CliController
 from quiggle.config.globals import QUIGGLE_DIR
 
-def cli():
-    print('cli')
-    update_version(QUIGGLE_DIR + '/config/globals.py')
+def cli(): CliController()
 
 if __name__ == '__main__':
     app = server.QuiggleServer(name = 'Angieland')
