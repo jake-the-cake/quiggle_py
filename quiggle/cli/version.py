@@ -23,7 +23,7 @@ def update_version(cli, path: str) -> None:
                     if len(cli.values[0].split('.')) != 3:
                         updated_lines.append(line)
                         print(labellog('Invalid version format.'))
-                        break
+                        continue
                     split_line[1] = '\'' + cli.values[0] + '\'\n'
                 elif len(cli.flags) > 0:
                     for flag in cli.flags:
@@ -47,7 +47,7 @@ def update_version(cli, path: str) -> None:
                                 version_parts[1] = '0'
                         split_line[1] = '\'' + '.'.join(version_parts) + '\'\n'
                 else:
-                    split_line[1] = '.'.join(split_line[1])
+                    split_line[1] += '\n'
                 updated_lines.append(' = '.join(split_line))
             else: updated_lines.append(line)
         print(''.join(updated_lines))
@@ -72,24 +72,27 @@ class CliController:
             return self._help_menu()
         self.args: list = sys.argv[1:]
 
-    def _parse_command(self) -> None:
-        for arg in self.args:
-            if arg == '-' or arg[0] != '-':
-                if self.command == '':
-                    self.command = arg
-                elif len(self.flags) == 0:
-                    self.values.append(arg)
-                else:
-                    self.flags[-1]['values'].append(arg)
-            elif arg[1] != '-':
-                self.options.append(arg[1:])
+    def _handle_parsing(self, arg: str) -> None:
+        if arg == '-' or arg[0] != '-':
+            if self.command == '':
+                self.command = arg
+            elif len(self.flags) == 0:
+                self.values.append(arg)
             else:
-                self.flags.append({
-                    'flag': arg[2:],
-                    'values': [] 
-                })
+                self.flags[-1]['values'].append(arg)
+        elif arg[1] != '-':
+            self.options.append(arg[1:])
+        else:
+            self.flags.append({
+                'flag': arg[2:],
+                'values': [] 
+            })
+
+    def _parse_command(self) -> None:
+        for arg in self.args: self._handle_parsing(arg)
         if self.command in self.COMMANDS.keys():
             self.COMMANDS[self.command](self, globals.QUIGGLE_DIR + '/config/globals.py')
+        else: print(labellog(f'Invalid command: "{ self.command }"'))
     
     def filter_flags(self, flags: list):
         for flag in self.flags:
