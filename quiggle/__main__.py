@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.server import server
-from quiggle.cli.version import CliController
+from quiggle.cli.cli import CliController
 
 def cli(): CliController()
 

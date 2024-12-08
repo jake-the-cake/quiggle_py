@@ -1,9 +1,7 @@
 ## local imports
 from quiggle.docs import doc
-from quiggle.config.globals import VERSION_NUMBER
-from quiggle.tools.logs.colors import Colors
-from quiggle.tools.logs.presets import errorlog, questionlog
 from quiggle.prompts import MAIN_MENU, MESSAGES
+from quiggle.tools.logs.presets import errorlog, questionlog, labellog
 
 ## gloabal imports
 import os
@@ -41,7 +39,7 @@ def main_prompt() -> None:
 def create():
 	DOC.function(create.__name__, '')
 	
-	print(Colors.YELLOW + '\nSETUP' + Colors.RESET)
+	print(labellog('\nSETUP'))
 	def ask_for_project_name():
 		name       = input(questionlog('What is the project name? '))
 		valid_name = name.strip().lower().replace(' ', '-')
@@ -116,7 +114,7 @@ def create():
 						build_file_system(item[k], new_dir)
 		
 		build_file_system(STRUCTURE[key], current_dir)
-	print(Colors.YELLOW + 'Setup complete for project "{}"'.format(name) + Colors.RESET)
+	print(labellog(f'Setup complete for project "{ name }"'))
 
 
 ##############
