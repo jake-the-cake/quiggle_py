@@ -1,8 +1,6 @@
 ## local imports
-from quiggle.config import globals
-from quiggle.tools.logs.presets import labellog
 from quiggle.vars.array import Array
-from quiggle.tools.reader import Reader, Parser
+from quiggle.tools.reader.reader import Reader
 
 # global veriables for tne function
 VERSION_NUMBER = 'VERSION_NUMBER'
@@ -13,7 +11,7 @@ VERSION_PARTS = {
 }
 
 def update_version(cli, path: str) -> None:
-	
+
 	# filter out non-accepted flags and options
   cli.filter_options(['minor', 'major'])
   cli.filter_flags(['n'])
@@ -22,24 +20,17 @@ def update_version(cli, path: str) -> None:
   reader: Reader = Reader(path)
   lines:    list = reader.get_lines()
 	
-	# create an empty list for the new lines
-  updated_lines = []
-
 	# loops through each line
-  for line in lines.lines:
-    
-		# initialize a new parser instance for the  line
-    line = Parser(line)
-
-		# find the line to be changed
+  for line in lines:
+    # find the line to be changed
     if line.starts_with(VERSION_NUMBER):
 			# remove the newline tag and extract an array of the version number parts
       line.strip_newline_tag()
       array = Array(line.get_value('=').strip('\''), split='.', items=3)
-      if len(cli.options) == 0:
-        array.increase_numeric_value_by_index(2, 1)
-      elif len(cli.values) > 0:
+      if len(cli.values) > 0:
         array = Array(cli.values[0], split='.', items=3) 
+      elif len(cli.options) == 0:
+        array.increase_numeric_value_by_index(2, 1)
       else:  
         for option in cli.options:
           values = option['values']
@@ -56,5 +47,5 @@ def update_version(cli, path: str) -> None:
       line.data = f'{ VERSION_NUMBER } = \'{ array.to_string('.') }\''
       line.append_newline_tag()
 
-    updated_lines.append(line.data)
-  print(''.join(updated_lines))
+    reader.updated_lines.append(line.data)
+  reader.write()

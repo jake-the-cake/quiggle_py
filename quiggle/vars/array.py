@@ -14,7 +14,7 @@ class Array:
 		self.NUMERIC_METHODS = {
 			'+': self.increase_numeric_value_by_index,
 			'-': self.decrease_numeric_value_by_index,
-			'=': self.change_numeric_value_by_index,
+			'=': self.change_numeric_value_by_index
 		}
 
 	def increase_numeric_value_by_index(self, index: int, value: int = 1):
@@ -29,5 +29,5 @@ class Array:
 	def edit_numeric_value_by_index(self, index: int, value: int, operator: str = '=') -> None:
 		self.NUMERIC_METHODS[operator](index, value)
 	
-	def to_string(self, join: str = ''):
-		return join.join(self.array)
+	def to_string(self, joint: str = ''):
+		return joint.join(self.array)
