@@ -37,7 +37,7 @@ def update_version(cli, path: str) -> None:
       line.strip_newline_tag()
       array = Array(line.get_value('=').strip('\''), split='.', items=3)
       if len(cli.options) == 0:
-        array.values[2] = array.change_value_by_index(2, 1)['+']
+        array.increase_numeric_value_by_index(2, 1)
       elif len(cli.values) > 0:
         array = Array(cli.values[0], split='.', items=3) 
       else:  
@@ -46,11 +46,11 @@ def update_version(cli, path: str) -> None:
           index = VERSION_PARTS[option['option']]
           if len(values) == 0: values = ['+', '1']
           if len(values) == 1: values = ['='] + values
-          array.values[index] = array.change_value_by_index(index, int(values[1]))[values[0]]
+          array.edit_numeric_value_by_index(index, int(values[1]), values[0])
         if 'n' not in cli.flags:
           if not any(item.get('option') == 'minor' for item in cli.options):
-            array.values[1] = array.change_value_by_index(1, 0)['=']
-          array.values[2] = array.change_value_by_index(2, 0)['=']
+            array.edit_numeric_value_by_index(1, 0, '=')
+          array.edit_numeric_value_by_index(2, 0, '=')
           
 
       line.data = f'{ VERSION_NUMBER } = \'{ array.to_string('.') }\''

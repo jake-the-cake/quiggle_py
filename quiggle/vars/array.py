@@ -8,14 +8,26 @@ class Array:
 			while len(value) < kwargs['items']:
 				value.append('')
 			value = value[:kwargs['items']]
-		self.values = value
-	
-	def change_value_by_index(self, index: int, value: int):
-		return {
-			'=': str(value),
-			'+': str(int(self.values[index]) + value),
-			'-': str(int(self.values[index]) - value),
+		
+		self.array = list(value)
+		
+		self.NUMERIC_METHODS = {
+			'+': self.increase_numeric_value_by_index,
+			'-': self.decrease_numeric_value_by_index,
+			'=': self.change_numeric_value_by_index,
 		}
+
+	def increase_numeric_value_by_index(self, index: int, value: int = 1):
+		self.array[index] = str(int(self.array[index]) + value)
+	
+	def decrease_numeric_value_by_index(self, index: int, value: int = 1):
+		self.array[index] = str(int(self.array[index]) - value)
+		
+	def change_numeric_value_by_index(self, index: int, value: int = 1):
+		self.array[index] = str(value)
+
+	def edit_numeric_value_by_index(self, index: int, value: int, operator: str = '=') -> None:
+		self.NUMERIC_METHODS[operator](index, value)
 	
 	def to_string(self, join: str = ''):
-		return join.join(self.values)
+		return join.join(self.array)
