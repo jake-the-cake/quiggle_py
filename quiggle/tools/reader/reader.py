@@ -1,4 +1,4 @@
-from quiggle.tools.reader import Parser
+from quiggle.tools.reader.parser import Parser
 
 class Reader:
 
@@ -7,12 +7,14 @@ class Reader:
 		self.original_lines: list = []
 		self.updated_lines:  list = []
 
-	def get_lines(self):
+	def get_lines(self) -> list:
 		with open(self.path, 'r') as file:
-			self.original_lines = file.readlines()
-			for line in self.original_lines:
-				line = Parser(line, 'text')
+			for line in file.readlines():
+				self.original_lines.append(Parser(line, 'text'))
 		return self.original_lines
 	
-	def write(self):
+	def prewrite_line(self, line: str) -> None:
+		self.updated_lines.append(line)
+
+	def write(self) -> None:
 		print(''.join(self.updated_lines))

@@ -19,13 +19,9 @@ def update_version(cli, path: str) -> None:
 	# initialize a reader with the file path and extra the data by line
   reader: Reader = Reader(path)
   lines:    list = reader.get_lines()
-	
-	# loops through each line
+
   for line in lines:
-    # find the line to be changed
-    if line.starts_with(VERSION_NUMBER):
-			# remove the newline tag and extract an array of the version number parts
-      line.strip_newline_tag()
+    if line.starts_with(VERSION_NUMBER, line.strip_newline_tag):
       array = Array(line.get_value('=').strip('\''), split='.', items=3)
       if len(cli.values) > 0:
         array = Array(cli.values[0], split='.', items=3) 
@@ -41,11 +37,7 @@ def update_version(cli, path: str) -> None:
         if 'n' not in cli.flags:
           if not any(item.get('option') == 'minor' for item in cli.options):
             array.edit_numeric_value_by_index(1, 0, '=')
-          array.edit_numeric_value_by_index(2, 0, '=')
-          
-
-      line.data = f'{ VERSION_NUMBER } = \'{ array.to_string('.') }\''
-      line.append_newline_tag()
-
+          array.edit_numeric_value_by_index(2, 0, '=')    
+      line.set_data(f'{ VERSION_NUMBER } = \'{ array.to_string('.') }\'', line.append_newline_tag)
     reader.updated_lines.append(line.data)
   reader.write()
