@@ -1,6 +1,7 @@
 ## local imports
 from quiggle.vars.array import Array
 from quiggle.tools.reader.reader import Reader
+from quiggle.tools.logs.event import EventLog
 
 # global veriables for tne function
 VERSION_NUMBER = 'VERSION_NUMBER'
@@ -40,4 +41,6 @@ def update_version(cli, path: str) -> None:
           array.edit_numeric_value_by_index(2, 0, '=')    
       line.set_data(f'{ VERSION_NUMBER } = \'{ array.to_string('.') }\'', line.append_newline_tag)
     reader.updated_lines.append(line.data)
+  log = EventLog('version.json')
+  # log.
   reader.write()

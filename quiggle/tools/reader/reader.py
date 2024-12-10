@@ -17,4 +17,5 @@ class Reader:
 		self.updated_lines.append(line)
 
 	def write(self) -> None:
-		print(''.join(self.updated_lines))
+		# with open(self.path, 'w') as file:
+			print(''.join(self.updated_lines))
