@@ -1,14 +1,24 @@
+## local imports
 from quiggle.tools.reader.parser import Parser
+
+## global imports
+from pathlib import Path
 
 class Reader:
 
-	def __init__(self, path: str) -> None:
-		self.path:            str = path
+	def __init__(self, file: str) -> None:
+		self.file:            str = file
 		self.original_lines: list = []
 		self.updated_lines:  list = []
+		self.check_valid_path()
+
+	def check_valid_path(self) -> None:
+		file_path = Path(self.file)
+		if not file_path.exists():
+			file_path.touch()
 
 	def get_lines(self) -> list:
-		with open(self.path, 'r') as file:
+		with open(self.file, 'r') as file:
 			for line in file.readlines():
 				self.original_lines.append(Parser(line, 'text'))
 		return self.original_lines
