@@ -20,6 +20,8 @@ def update_version(cli, path: str) -> None:
 	# initialize a reader with the file path and extra the data by line
   reader: Reader = Reader(path)
   lines:    list = reader.get_lines()
+  # initialize event log
+  log:  EventLog = EventLog('version.json')
 
   for line in lines:
     if line.starts_with(VERSION_NUMBER, line.strip_newline_tag):
@@ -38,9 +40,10 @@ def update_version(cli, path: str) -> None:
         if 'n' not in cli.flags:
           if not any(item.get('option') == 'minor' for item in cli.options):
             array.edit_numeric_value_by_index(1, 0, '=')
-          array.edit_numeric_value_by_index(2, 0, '=')    
-      line.set_data(f'{ VERSION_NUMBER } = \'{ array.to_string('.') }\'', line.append_newline_tag)
+          array.edit_numeric_value_by_index(2, 0, '=')  
+      new_version = array.to_string('.')  
+      log.add_property('version', new_version)
+      line.set_data(f'{ VERSION_NUMBER } = \'{ new_version }\'', line.append_newline_tag)
     reader.updated_lines.append(line.data)
-  log = EventLog('version.json')
-  # log.
+  print(log.entry)
   reader.write()

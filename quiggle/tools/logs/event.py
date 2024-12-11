@@ -10,9 +10,11 @@ FOLDER_PATH = QUIGGLE_DIR + '/logs/'
 class EventLog:
     
     def __init__(self, filename: str):
-        self.file:   str = FOLDER_PATH + filename
-        self.entry: dict = {
+        self.file:   str    = FOLDER_PATH + filename
+        self.reader: Reader = Reader(self.file)
+        self.entry: dict    = {
             'timestamp': datetime.now()
         }
-
-        Reader(self.file)
+    
+    def add_property(self, name: str, value: str) -> None:
+        self.entry[name] = value

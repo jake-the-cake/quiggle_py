@@ -16,6 +16,8 @@ class Reader:
 		
 	def __init__(self, file: str) -> None:
 		self.file:            str = file
+		self.original_data:  list = []
+		self.updated_data:  list = []
 		self.original_lines: list = []
 		self.updated_lines:  list = []
 		self.check_valid_path()
@@ -39,9 +41,15 @@ class Reader:
 				self.original_lines.append(Parser(line, 'text'))
 		return self.original_lines
 	
+	def get_data(self) -> str:
+		with open(self.file, 'r') as file:
+			self.original_data = file.read()
+		return self.original_data
+	
 	def prewrite_line(self, line: str) -> None:
 		self.updated_lines.append(line)
 
 	def write(self) -> None:
 		# with open(self.path, 'w') as file:
-			print(''.join(self.updated_lines))
+			# file.write(''.join(self.updated_lines))
+		print('DONE')
