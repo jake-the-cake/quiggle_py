@@ -3,13 +3,15 @@
 .Response > json response
 .HTTPController > API protocol
 .Injector > component tag
-.CLI > version auto update
+.Logs > create log event
 
 /* Mid */
+.CLI > .version > log event
 .Quiggle main > strip chars in project name
 .Toolkit > create and add get_elapse_time from HTTPController
 .QuiggleServer > middleware
 .CLI > help menu
+*** > timestamp dict
 
 /* Low */
 .Request > web token

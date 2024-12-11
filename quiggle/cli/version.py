@@ -2,6 +2,7 @@
 from quiggle.vars.array import Array
 from quiggle.tools.reader.reader import Reader
 from quiggle.tools.logs.event import EventLog
+from quiggle.tools.logs.presets import labellog
 
 # global veriables for tne function
 VERSION_NUMBER = 'VERSION_NUMBER'
@@ -45,5 +46,6 @@ def update_version(cli, path: str) -> None:
       log.add_property('version', new_version)
       line.set_data(f'{ VERSION_NUMBER } = \'{ new_version }\'', line.append_newline_tag)
     reader.updated_lines.append(line.data)
+  log.use_log_message('notes', labellog('Update notes: '))
   print(log.entry)
   reader.write()
