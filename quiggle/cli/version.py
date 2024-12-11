@@ -1,8 +1,8 @@
 ## local imports
-from quiggle.vars.array import Array
-from quiggle.tools.reader.reader import Reader
 from quiggle.tools.logs.event import EventLog
-from quiggle.tools.logs.presets import labellog
+from quiggle.tools.logs.presets import labellog, errorlog
+from quiggle.tools.reader.reader import Reader
+from quiggle.vars.array import Array
 
 # global veriables for tne function
 VERSION_NUMBER = 'VERSION_NUMBER'
@@ -27,8 +27,10 @@ def update_version(cli, path: str) -> None:
   for line in lines:
     if line.starts_with(VERSION_NUMBER, line.strip_newline_tag):
       array = Array(line.get_value('=').strip('\''), split='.', items=3)
+      original_version = array.to_string('.')
       if len(cli.values) > 0:
         array = Array(cli.values[0], split='.', items=3) 
+        original_version = array.to_string('.')
       elif len(cli.options) == 0:
         array.increase_numeric_value_by_index(2, 1)
       else:  
@@ -42,10 +44,19 @@ def update_version(cli, path: str) -> None:
           if not any(item.get('option') == 'minor' for item in cli.options):
             array.edit_numeric_value_by_index(1, 0, '=')
           array.edit_numeric_value_by_index(2, 0, '=')  
-      new_version = array.to_string('.')  
+      new_version = array.to_string('.')
       log.add_property('version', new_version)
       line.set_data(f'{ VERSION_NUMBER } = \'{ new_version }\'', line.append_newline_tag)
     reader.updated_lines.append(line.data)
-  log.use_log_message('notes', labellog('Update notes: '))
-  print(log.entry)
-  reader.write()
+  
+  def log_entry():
+    log.use_log_message('notes', labellog('Update notes: '))
+    if len(log.entry['notes']) > 0:
+      reader.write()
+      log.write()
+    else:
+      print(errorlog('Update notes are required.'))
+      log_entry()
+  
+  print(f'Update to version { labellog(new_version) } (previous: { errorlog(original_version) })')
+  log_entry()

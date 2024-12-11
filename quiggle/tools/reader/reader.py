@@ -16,8 +16,8 @@ class Reader:
 		
 	def __init__(self, file: str) -> None:
 		self.file:            str = file
-		self.original_data:  list = []
-		self.updated_data:  list = []
+		self.original_data:   str = ''
+		self.updated_data:    str = ''
 		self.original_lines: list = []
 		self.updated_lines:  list = []
 		self.check_valid_path()
@@ -49,7 +49,9 @@ class Reader:
 	def prewrite_line(self, line: str) -> None:
 		self.updated_lines.append(line)
 
-	def write(self) -> None:
-		# with open(self.path, 'w') as file:
-			# file.write(''.join(self.updated_lines))
-		print('DONE')
+	def write(self, mode = 'lines') -> None:
+		with open(self.file, 'w') as file:
+			if mode == 'lines':
+				file.write(''.join(self.updated_lines))
+			elif mode == 'data':
+				file.write(self.updated_data)
