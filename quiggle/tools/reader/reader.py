@@ -4,6 +4,7 @@ from quiggle.tools.logs.presets import infolog
 
 ## global imports
 from pathlib import Path
+import json
 
 class Reader:
 
@@ -41,6 +42,10 @@ class Reader:
 				self.original_lines.append(Parser(line, 'text'))
 		return self.original_lines
 	
+	def get_json(self):
+		with open(self.file, 'r') as file:
+			self.original_data = json.load()
+
 	def get_data(self) -> str:
 		with open(self.file, 'r') as file:
 			self.original_data = file.read()

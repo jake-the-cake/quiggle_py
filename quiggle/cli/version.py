@@ -23,6 +23,7 @@ def update_version(cli, path: str) -> None:
   lines:    list = reader.get_lines()
   # initialize event log
   log:  EventLog = EventLog('version.json')
+  log.to_dict()
 
   for line in lines:
     if line.starts_with(VERSION_NUMBER, line.strip_newline_tag):
@@ -52,6 +53,7 @@ def update_version(cli, path: str) -> None:
   def log_entry():
     log.use_log_message('notes', labellog('Update notes: '))
     if len(log.entry['notes']) > 0:
+      log.add_entry()
       reader.write()
       log.write()
     else:

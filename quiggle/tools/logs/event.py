@@ -25,10 +25,22 @@ class EventLog:
         self.add_property(key, message)
 
     def get_original_data(self):
-        self.reader.get_data()
+        self.reader.get_json()
+
+    def to_dict(self):
+        self.reader.updated_data = json.dumps(self.reader.original_data)
+        if self.reader.updated_data == '""':
+            self.reader.updated_data = json.dumps([])
+        json.load(self.reader.updated_data)
+        print(self.reader.original_data)
+        print(self.reader.updated_data)
 
     def to_json(self):
-        self.reader.updated_data = json.dumps(self.reader.original_data)
+        self.reader.updated_data = json.dumps(self.reader.updated_data)
+
+    def add_entry(self):
+        self.reader.updated_data.append(self.entry)
 
     def write(self):
+        self.to_json()
         self.reader.write('data')

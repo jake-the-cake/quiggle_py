@@ -3,7 +3,7 @@
 .Response > json response
 .HTTPController > API protocol
 .Injector > component tag
-.Logs > create log event
+.Logs > append entry and write to file
 
 /* Mid */
 .CLI > .version > log event
