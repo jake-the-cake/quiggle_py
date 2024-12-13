@@ -1,8 +1,8 @@
 ## local imports
-from .headers import Headers
+from quiggle.server.handlers.headers import Headers
 from quiggle.tools.logs.presets import errorlog
 from quiggle.config import globals
-from quiggle.controller.render.injector import HTMLInjector
+from quiggle.server.render.injector import HTMLInjector
 
 class HTMLResponse(Headers):
 
