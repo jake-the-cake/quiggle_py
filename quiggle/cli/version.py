@@ -22,8 +22,7 @@ def update_version(cli, path: str) -> None:
   reader: Reader = Reader(path)
   lines:    list = reader.get_lines()
   # initialize event log
-  log:  EventLog = EventLog('version.json')
-  log.to_dict()
+  log:  EventLog = EventLog('version.json').get_json_data()
 
   for line in lines:
     if line.starts_with(VERSION_NUMBER, line.strip_newline_tag):

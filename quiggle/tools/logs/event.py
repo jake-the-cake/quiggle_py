@@ -7,6 +7,8 @@ from datetime import datetime
 import json
 
 FOLDER_PATH = QUIGGLE_DIR + '/logs/'
+
+
 def timestamp_dict() -> dict:
     return { 'timestamp': datetime.now() }
 
@@ -24,22 +26,21 @@ class EventLog:
         message = input(prompt)
         self.add_property(key, message)
 
-    def get_original_data(self):
+    def get_json_data(self):
         self.reader.get_json()
+        return self
 
-    def to_dict(self):
-        self.reader.updated_data = json.dumps(self.reader.original_data)
-        if self.reader.updated_data == '""':
-            self.reader.updated_data = json.dumps([])
-        json.load(self.reader.updated_data)
-        print(self.reader.original_data)
-        print(self.reader.updated_data)
-
+    def serialize_datetime(self):
+        self.entry['timestamp'] = self.entry['timestamp'].strftime('%Y.%m.%d[%H:%M:%S]')
+    
     def to_json(self):
+        self.serialize_datetime()
         self.reader.updated_data = json.dumps(self.reader.updated_data)
 
     def add_entry(self):
-        self.reader.updated_data.append(self.entry)
+        print(self.reader.updated_data['data'])
+        self.reader.updated_data['data'].append(self.entry)
+        print(self.reader.updated_data)
 
     def write(self):
         self.to_json()

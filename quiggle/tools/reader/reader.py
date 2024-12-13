@@ -16,11 +16,10 @@ class Reader:
 		return True
 		
 	def __init__(self, file: str) -> None:
-		self.file:            str = file
-		self.original_data:   str = ''
-		self.updated_data:    str = ''
-		self.original_lines: list = []
-		self.updated_lines:  list = []
+		self.file:                 str = file
+		self.original_data: str | list = None
+		self.updated_data:         str = ''
+		self.updated_lines:       list = []
 		self.check_valid_path()
 
 	def setup_parent_directories(self, parent_path: Path) -> bool:
@@ -38,13 +37,20 @@ class Reader:
 
 	def get_lines(self) -> list:
 		with open(self.file, 'r') as file:
+			self.original_data = []
 			for line in file.readlines():
-				self.original_lines.append(Parser(line, 'text'))
-		return self.original_lines
+				self.original_data.append(Parser(line, 'text'))
+		return self.original_data
 	
 	def get_json(self):
 		with open(self.file, 'r') as file:
-			self.original_data = json.load()
+			data = file.read()
+			print(data)
+			if data != '':
+				self.original_data = json.loads(data)
+				print('data', self.original_data)
+				self.updated_data = self.original_data
+			else: self.updated_data = { "data": [] }
 
 	def get_data(self) -> str:
 		with open(self.file, 'r') as file:
