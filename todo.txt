@@ -1,17 +1,16 @@
 /* High */
+.Quiggle main > strip chars in project name
+
 .FolderRouter > redo algorithm / preload
 .Response > json response
 .HTTPController > API protocol
 .Injector > component tag
-.Logs > append entry and write to file
 
 /* Mid */
-.CLI > .version > log event
-.Quiggle main > strip chars in project name
+.CLI > help menu
 .Toolkit > create and add get_elapse_time from HTTPController
 .QuiggleServer > middleware
-.CLI > help menu
-*** > timestamp dict
+*** find home > timestamp dict
 
 /* Low */
 .Request > web token

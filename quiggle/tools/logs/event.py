@@ -38,9 +38,7 @@ class EventLog:
         self.reader.updated_data = json.dumps(self.reader.updated_data)
 
     def add_entry(self):
-        print(self.reader.updated_data['data'])
         self.reader.updated_data['data'].append(self.entry)
-        print(self.reader.updated_data)
 
     def write(self):
         self.to_json()

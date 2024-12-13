@@ -11,7 +11,7 @@ class Reader:
 	@staticmethod
 	def does_file_exist(file_path: Path) -> bool:
 		if not file_path.exists():
-			print(infolog(f'Could not find "{ file_path }"'))
+			print(infolog(f'Could not find file "{ file_path }"'))
 			return False
 		return True
 		
@@ -33,7 +33,7 @@ class Reader:
 		if not Reader.does_file_exist(file_path):
 			self.setup_parent_directories(file_path.parent)
 			file_path.touch()
-			print(infolog(f'Created file "{ file_path }".'))
+			print(infolog(f'Created file "{ file_path }"'))
 
 	def get_lines(self) -> list:
 		with open(self.file, 'r') as file:
@@ -45,10 +45,8 @@ class Reader:
 	def get_json(self):
 		with open(self.file, 'r') as file:
 			data = file.read()
-			print(data)
 			if data != '':
 				self.original_data = json.loads(data)
-				print('data', self.original_data)
 				self.updated_data = self.original_data
 			else: self.updated_data = { "data": [] }
 
