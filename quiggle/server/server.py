@@ -5,24 +5,32 @@ from quiggle.server.controllers.socket import SocketController
 from quiggle.server.prompts import MESSAGES
 from quiggle.tools.logs.presets import errorlog
 from quiggle.types.server import MiddlewareListType, MiddlewareType, ClientAddressType, ClientSocketType
+from quiggle.server.router import Router, RouterType
 
 ## global imports
 import threading
 
 class QuiggleServer:
 
-	def __init__(self, host: str = config.SERVER_HOST, port: int = config.SERVER_PORT, name: str = None):
+	def __init__(self, host: str = config.SERVER_HOST, port: int = config.SERVER_PORT, name: str = 'Server'):
+		# server variables
 		self.host: str = host
 		self.port: int = port
 		self.name: str = name
+		# middlewares
 		self.middlewares: MiddlewareListType = []
+		# objects
 		self.server_socket: SocketController = SocketController(self.host, self.port)
+		self.router:              RouterType = Router.setup()
 
 	''' Start the socket server and pass to accept connections. '''
 	def start(self) -> None:
-		self.server_socket.start_socket()
-		print(MESSAGES['connected'](self.host, self.port, self.name))
-		self._accept_connections()
+		try:
+			self.server_socket.start_socket()
+			print(MESSAGES['connected'](self.host, self.port, self.name))
+			self._accept_connections()
+		except Exception as e:
+			print(errorlog('Server error:'), e)
 
 	''' Accept and handle incoming connections. '''
 	def _accept_connections(self):
@@ -44,8 +52,8 @@ class QuiggleServer:
 			
 			controller.handle_request()
 			controller.choose_protocol()
-			controller.handle_routing()
-			print(client_socket.__dir__)
+			controller.handle_routing(self.router)
+			print(client_socket.__dir__())
 			for middleware in self.middlewares:
 				middleware(controller.request, controller.response)
 			

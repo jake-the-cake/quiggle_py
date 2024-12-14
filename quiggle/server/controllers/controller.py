@@ -1,5 +1,4 @@
 ## local imports
-from quiggle.config.read_local import read_local_file_variables
 from quiggle.server.controllers.connection import ConnectionLogger
 from quiggle.server.handlers.request import Request
 from quiggle.server.handlers.response import HTMLResponse
@@ -27,16 +26,9 @@ class HTTPServerController:
 			print(errorlog(f'Error handling request from { self.client_address[0] }:'), e)
 
 	''' Looks up the route. '''
-	def handle_routing(self):
-		settings = read_local_file_variables('config.py')
-		if not 'ROUTER_TYPE' in settings:
-			raise Exception('Please set a ROUTER_TYPE in config.py')
-		if not 'ROUTE_FOLDER' in settings:
-			raise Exception('Please set a root ROUTE_FOLDER in config.py')
-		if settings['ROUTER_TYPE'] == 'folder': self.router = FolderRouter(settings['ROUTE_FOLDER'])
-
-		route = self.router.find_route(self.request, self.response)
-		print(route)
+	def handle_routing(self, router):
+		router.find_route(self.request, self.response)
+		print(router.__dict__)
 
 	''' Generate an http response. '''
 	def choose_protocol(self) -> None:
