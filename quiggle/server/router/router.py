@@ -3,7 +3,10 @@ from quiggle.config.read_local import read_local_file_variables
 from quiggle.server.router.folder import FolderRouter
 
 config_file: str = 'config.py'
-settings:   list = read_local_file_variables(config_file)
+try:
+	settings:   list = read_local_file_variables(config_file)
+except:
+	settings = []
 r_type:      str = 'ROUTER_TYPE'
 r_folder:    str = 'ROUTE_FOLDER'
 

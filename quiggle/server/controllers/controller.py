@@ -28,7 +28,6 @@ class HTTPServerController:
 	''' Looks up the route. '''
 	def handle_routing(self, router):
 		router.find_route(self.request, self.response)
-		print(router.__dict__)
 
 	''' Generate an http response. '''
 	def choose_protocol(self) -> None:

@@ -53,7 +53,6 @@ class QuiggleServer:
 			controller.handle_request()
 			controller.choose_protocol()
 			controller.handle_routing(self.router)
-			print(client_socket.__dir__())
 			for middleware in self.middlewares:
 				middleware(controller.request, controller.response)
 			
