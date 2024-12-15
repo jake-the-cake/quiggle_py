@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.tools.logs.event import EventLog
-from quiggle.tools.logs.presets import labellog, errorlog
+from quiggle.tools.logs.presets import labellog, infolog, errorlog
 from quiggle.tools.reader.reader import Reader
 from quiggle.vars.array import Array
 
@@ -23,6 +23,8 @@ def update_version(cli, path: str) -> None:
   lines:    list = reader.get_lines()
   # initialize event log
   log:  EventLog = EventLog('version.json').get_json_data()
+
+  original_version = None
 
   for line in lines:
     if line.starts_with(VERSION_NUMBER, line.strip_newline_tag):
@@ -58,6 +60,8 @@ def update_version(cli, path: str) -> None:
     else:
       print(errorlog('Update notes are required.'))
       log_entry()
-  
-  print(f'Update to version { labellog(new_version) } (previous: { errorlog(original_version) })')
-  log_entry()
+  if not original_version:
+    print(labellog(f'Existing version number not found in { path }'))
+  else:
+    print(f'Update to version { labellog(new_version) } (previous: { infolog(original_version) })')
+    log_entry() 

@@ -1,12 +1,13 @@
 ## local imports
-from quiggle.config.globals import QUIGGLE_DIR
 from quiggle.tools.reader import Reader
 
 ## global imports
 from datetime import datetime
+from pathlib import Path
 import json
 
-FOLDER_PATH = QUIGGLE_DIR + '/logs/'
+cwd = Path.cwd()
+LOG_FOLDER = cwd / 'logs'
 
 
 def timestamp_dict() -> dict:
@@ -15,7 +16,7 @@ def timestamp_dict() -> dict:
 class EventLog:
     
     def __init__(self, filename: str):
-        self.file:      str = FOLDER_PATH + filename
+        self.file:      str = LOG_FOLDER / filename
         self.reader: Reader = Reader(self.file)
         self.entry:    dict = timestamp_dict()
     

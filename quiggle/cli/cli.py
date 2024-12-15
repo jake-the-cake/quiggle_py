@@ -1,7 +1,7 @@
 ## local imports
 from quiggle.cli.version import update_version
 from quiggle.tools.logs.presets import labellog
-from quiggle.config import globals
+from quiggle.config.root import config_root
 
 ## global imports
 import sys
@@ -29,7 +29,7 @@ class CliController:
         
 	def _parse_command(self) -> None:
 		if self.command in self.COMMANDS.keys():
-			self.COMMANDS[self.command](self, globals.QUIGGLE_DIR + '/config/globals.py')
+			self.COMMANDS[self.command](self, config_root('globals'))
 		else: print(labellog(f'Invalid command: "{ self.command }"'))
 
 	def _append_to_last_option(self, array: list, arg: any, key: str = None):
