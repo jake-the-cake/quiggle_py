@@ -6,7 +6,7 @@ from quiggle.tools.logs.presets import infolog
 from pathlib import Path
 
 def get_quiggle_dir() -> str:
-    return Path(file)
+    return '/' + str(Path(file)).strip('/__init__.py')
 
 def config_root(filename: str = 'config') -> str:
     paths: list = [
@@ -17,7 +17,7 @@ def config_root(filename: str = 'config') -> str:
     ]
 
     for path in paths:
-        path = Path((str(Path.cwd())) + path)
+        path = Path.cwd() / path[1:]
         if path.exists():
             return path
 

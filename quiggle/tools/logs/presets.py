@@ -16,7 +16,7 @@ def questionlog(message: str) -> str:
 	return useColor(message, fg='bright-green')
 
 def errorlog(message: str) -> str:
-	return useColor(message, fg='red')
+	return useColor(f' { message } ', fg='white', bg='red')
 
 def buglog(message: str) -> None:
 	return (
