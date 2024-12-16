@@ -12,8 +12,9 @@ class FolderRouter:
 		self.base_dir: str = os.getcwd() + base_dir
 		print(infolog(f'-- Initializing routes in { self.base_dir } folder.'))
 		# define routes as a folder structure object
-		self.folders: dict = FolderStructure()
-		self.routes:  dict = {}
+		self.folders:  dict = FolderStructure()
+		self.routes:   dict = {}
+		self.dynamics: list = []
 		self.define_route_tree()
 
 	def define_route_tree(self) -> None:
@@ -21,22 +22,19 @@ class FolderRouter:
 		self.routes = self.folders.value
 		print(labellog('-- Folder router parsing complete.'))
 
+	# def check_dynamic_routes
+
 	def check_route(self, routes: dict, keys: list) -> bool:
 		if keys[0] == '': keys = keys[1:]
 		for key in routes.keys():
 			if key == keys[0]:
-				if len(key) == 1: return True
+				if len(keys) == 1: return True
 				return self.check_route(routes[key], keys[1:])
 		return False
 
 	def find_route(self, request, response):
 		keys = (request.path.split('/') + ['__main__'])[1:]
-		contents = None
-		if self.check_route(self.routes, keys):
-			contents = True
-		route = self.base_dir + request.path
-
-		if not contents:
+		if not self.check_route(self.routes, keys):
 			response.status_code = 404
 			return response.init_body(response.use_default_page())
 		response.status_code = 200
