@@ -6,6 +6,7 @@ from quiggle.server.prompts import MESSAGES
 from quiggle.tools.logs.presets import errorlog
 from quiggle.types.server import MiddlewareListType, MiddlewareType, ClientAddressType, ClientSocketType
 from quiggle.server.router import Router, RouterType
+from quiggle.server.router.controller import RouteController
 
 ## global imports
 import threading
@@ -21,7 +22,7 @@ class QuiggleServer:
 		self.middlewares: MiddlewareListType = []
 		# objects
 		self.server_socket: SocketController = SocketController(self.host, self.port)
-		self.router:              RouterType = Router.setup()
+		self.router:         RouteController = RouteController()
 
 	''' Start the socket server and pass to accept connections. '''
 	def start(self) -> None:

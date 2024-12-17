@@ -1,5 +1,5 @@
 ## local imports
-from quiggle.config.read_local import read_local_file_variables
+from quiggle.config.read import read_local_file_variables
 from quiggle.config.root import config_root
 from quiggle.server.router.folder import FolderRouter
 

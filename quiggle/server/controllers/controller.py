@@ -2,7 +2,7 @@
 from quiggle.server.controllers.connection import ConnectionLogger
 from quiggle.server.handlers.request import Request
 from quiggle.server.handlers.response import HTMLResponse
-from quiggle.server.router.folder import FolderRouter
+from quiggle.server.router.controller import RouteController
 from quiggle.tools.logs.presets import errorlog
 from quiggle.types.server import ClientAddressType, ClientSocketType
 
@@ -10,7 +10,6 @@ class HTTPServerController:
 	def __init__(self, client_socket, client_address):
 		self.request:                  Request = None
 		self.response:            HTMLResponse = None
-		self.router:              FolderRouter = None
 		self.client_socket:   ClientSocketType = client_socket
 		self.client_address: ClientAddressType = client_address
 		self.connection:      ConnectionLogger = ConnectionLogger(client_address[0], 10)
