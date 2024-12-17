@@ -1,11 +1,12 @@
 ## local imports
 from quiggle.tools.logs.presets import infolog, labellog, errorlog
 from quiggle.tools.reader.folder import FolderStructure
+from quiggle.server.router import Router
 
 ## global imports
 import os
 
-class FolderRouter:
+class FolderRouter(Router):
 
 	def __init__(self, base_dir) -> None:
 		# set base directory and log

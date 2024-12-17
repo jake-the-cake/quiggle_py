@@ -1,3 +1,3 @@
 # /quiggle/server/router
 
-from .router import Router, RouterType
+from .router import Router
