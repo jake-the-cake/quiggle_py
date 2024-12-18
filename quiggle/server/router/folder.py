@@ -8,22 +8,21 @@ import os
 
 class FolderRouter(Router):
 
-	def __init__(self, base_dir) -> None:
+	def __init__(self, route_dir) -> None:
 		# set base directory and log
-		self.base_dir: str = os.getcwd() + base_dir
-		print(infolog(f'-- Initializing routes in { self.base_dir } folder.'))
-		# define routes as a folder structure object
+		self.route_dir: str = os.getcwd() + route_dir
+		print(infolog(f'-- Initializing routes in { self.route_dir } folder.'))
+		# folder structure object
 		self.folders:  dict = FolderStructure()
-		self.routes:   dict = {}
-		self.dynamics: list = []
-		self.define_route_tree()
+		super().__init__()
+
+	def _set_tree(self):
+		return super()._set_tree()
 
 	def define_route_tree(self) -> None:
-		self.folders.find_contents(self.base_dir, self.folders.value)
+		self.folders.parse(self.route_dir, self.folders.value)
 		self.routes = self.folders.value
 		print(labellog('-- Folder router parsing complete.'))
-
-	# def check_dynamic_routes
 
 	def check_route(self, routes: dict, keys: list) -> bool:
 		if keys[0] == '': keys = keys[1:]
