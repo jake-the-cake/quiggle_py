@@ -17,7 +17,7 @@ class Router:
 		self.tree: dict = self._set_tree()
 
 	def _set_tree(self):
-		print('super', self._set_tree.__name__)
+		pass
 
 	def _set_routes(self):
 		pass
