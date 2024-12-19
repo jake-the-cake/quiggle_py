@@ -1,5 +1,8 @@
 ## local imports
 from quiggle.tools.reader.folder import FolderStructure
+from quiggle.tools.logs.presets import errorlog, labellog, infolog
+
+
 
 class Router:
 
@@ -15,12 +18,17 @@ class Router:
 			}
 		}
 		self.tree: dict = self._set_tree()
+		self._set_routes()
 
-	def _set_tree(self):
-		pass
-
-	def _set_routes(self):
-		pass
+	def _set_tree(self, tree = None):
+		if tree == None:
+			raise Exception(f'{ errorlog(f'No tree found.') } >>> { Router._set_tree.__str__() }')	
+		return tree
+		
+	def _set_routes(self) -> list:
+		print(infolog('-- Sorting routes.'))
+		routes: list = FolderStructure(self.tree).paths()
+		return routes
 
 	def check_route(self):
 		pass

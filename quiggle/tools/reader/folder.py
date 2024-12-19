@@ -4,7 +4,8 @@ from pathlib import Path
 class FolderStructure:
 	
 	def __init__(self, tree = {}):
-		self.tree = self._validate_tree(tree)
+		self.tree:  dict = self._validate_tree(tree)
+		self.path_list: list = []
 
 	def parse(self, parent, dictionary = None) -> None:
 		parent = Path(parent)
@@ -16,6 +17,9 @@ class FolderStructure:
 				dictionary[item.name] = {}
 				self.parse(item, dictionary[item.name])
 		return self.tree
+
+	def paths(self) -> list:
+		return self.path_list
 
 	def _check_string(self, value) -> None:
 		if not isinstance(value, str): 

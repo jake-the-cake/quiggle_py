@@ -1,7 +1,7 @@
 ## local imports
 from quiggle.tools.logs.presets import infolog, labellog, errorlog
 from quiggle.tools.reader.folder import FolderStructure
-from quiggle.server.router import Router
+from quiggle.server.router import Router, MESSAGES, parsing_complete
 
 ## global imports
 import os
@@ -15,9 +15,13 @@ class FolderRouter(Router):
 
 	def _set_tree(self):
 		tree = FolderStructure().parse(self.route_dir)
-		print(labellog('-- Folder router parsing complete.'))
-		print(tree)
-		return tree
+		print(MESSAGES['parsed']('Folder'))
+		return super()._set_tree(tree)
+
+	def _set_routes(self):
+		routes: list = super()._set_routes()
+		print(routes)
+		print(MESSAGES['parsed']('Route'))
 
 	def check_route(self, routes: dict, keys: list) -> bool:
 		if keys[0] == '': keys = keys[1:]
