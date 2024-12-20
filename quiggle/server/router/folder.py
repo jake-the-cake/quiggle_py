@@ -21,9 +21,10 @@ class FolderRouter(Router):
 	def _set_routes(self):
 		routes: list = super()._set_routes()
 		for route in routes:
-			
-			print(route)
-		print(routes)
+			if os.path.exists(self.route_dir + route + '/view.py'):
+				print('has view')
+			if os.path.exists(self.route_dir + route + '/api.py'):
+				print('has api')
 		print(MESSAGES['parsed']('Route'))
 
 	def check_route(self, routes: dict, keys: list) -> bool:

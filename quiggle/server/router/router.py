@@ -28,6 +28,9 @@ class Router:
 		routes: list = FolderStructure(self.tree).paths()
 		return routes
 
+	def is_dynamic_route(self, dictionary: dict) -> bool:
+		return True
+
 	def check_route(self):
 		pass
 
