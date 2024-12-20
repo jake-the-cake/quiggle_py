@@ -5,17 +5,8 @@ from quiggle.tools.logs.presets import errorlog, labellog, infolog
 class Router:
 
 	def __init__(self):
-		self.routes: dict = {
-			'api': {
-				'static': [],
-				'dynamic': []
-			},
-			'html': {
-				'static': [],
-				'dynamic': []
-			}
-		}
-		self.tree: dict = self._set_tree()
+		self.routes: dict = {}
+		self.tree:   dict = self._set_tree()
 		self._set_routes()
 
 	def _set_tree(self, tree = None):
@@ -28,8 +19,19 @@ class Router:
 		routes: list = FolderStructure(self.tree).paths()
 		return routes
 
-	def is_dynamic_route(self, dictionary: dict) -> bool:
-		return True
+	def _is_dynamic_route(self, route: str) -> bool:
+		return any(segment.startswith('$') for segment in route.split('/'))
+
+	def _sort_route(self, route: str, protocol: str):
+		if self._is_dynamic_route(route):
+			self.routes[protocol]['dynamic'].append(route)
+		else: self.routes[protocol]['static'].append(route)
+
+	def _add_protocol(self, protocol: str):
+		self.routes[protocol] = self._protocol_dict()
+
+	def _protocol_dict(self):
+		return { 'static': [], 'dynamic': [] }
 
 	def check_route(self):
 		pass

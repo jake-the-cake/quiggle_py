@@ -19,13 +19,16 @@ class FolderRouter(Router):
 		return super()._set_tree(tree)
 
 	def _set_routes(self):
+		self._add_protocol('html')
+		self._add_protocol('api')
 		routes: list = super()._set_routes()
 		for route in routes:
 			if os.path.exists(self.route_dir + route + '/view.py'):
-				print('has view')
+				self._sort_route(route, 'html')
 			if os.path.exists(self.route_dir + route + '/api.py'):
-				print('has api')
+				self._sort_route(route, 'api')
 		print(MESSAGES['parsed']('Route'))
+		print(self.routes)
 
 	def check_route(self, routes: dict, keys: list) -> bool:
 		if keys[0] == '': keys = keys[1:]
