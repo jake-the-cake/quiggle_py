@@ -1,14 +1,11 @@
 /* High */
 .Quiggle main > strip chars in project name
-
-.FolderRouter > redo algorithm / preload
 .Response > json response
 .HTTPController > API protocol
 .Injector > component tag
 
 /* Mid */
 .CLI > help menu
-.FolderRouter > check_route > multi alts
 .Toolkit > create and add get_elapse_time from HTTPController
 .QuiggleServer > middleware
 *** find home > timestamp dict

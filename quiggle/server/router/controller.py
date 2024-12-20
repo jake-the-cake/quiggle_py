@@ -28,3 +28,7 @@ class RouteController:
             if not self.route_folder in self.settings:
                 raise not_set(self.route_folder, self.config_file)
             return FolderRouter(self.settings[self.route_folder])
+
+    def find(self, request, response) -> None:
+        path = self.router.find_route(request.path)
+        print(path)

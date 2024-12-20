@@ -16,8 +16,7 @@ class Router:
 		
 	def _set_routes(self) -> list:
 		print(infolog('-- Sorting routes.'))
-		routes: list = FolderStructure(self.tree).paths()
-		return routes
+		return FolderStructure(self.tree).paths()
 
 	def _is_dynamic_route(self, route: str) -> bool:
 		return any(segment.startswith('$') for segment in route.split('/'))
