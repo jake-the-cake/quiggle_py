@@ -18,7 +18,15 @@ class FolderStructure:
 				self.parse(item, dictionary[item.name])
 		return self.tree
 
-	def paths(self) -> list:
+	def paths(self, path = Path('/'), dictionary = None) -> list:
+		if dictionary == None: dictionary = self.tree
+		for key in dictionary.keys():
+			if dictionary[key] == None:
+				file_path = path.__str__()
+				if file_path not in self.path_list:
+					self.path_list.append(file_path)				
+			if isinstance(dictionary[key], dict):
+				self.paths(path / key, dictionary[key])
 		return self.path_list
 
 	def _check_string(self, value) -> None:

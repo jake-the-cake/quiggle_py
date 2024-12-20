@@ -20,6 +20,9 @@ class FolderRouter(Router):
 
 	def _set_routes(self):
 		routes: list = super()._set_routes()
+		for route in routes:
+			
+			print(route)
 		print(routes)
 		print(MESSAGES['parsed']('Route'))
 

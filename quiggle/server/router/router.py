@@ -2,8 +2,6 @@
 from quiggle.tools.reader.folder import FolderStructure
 from quiggle.tools.logs.presets import errorlog, labellog, infolog
 
-
-
 class Router:
 
 	def __init__(self):
