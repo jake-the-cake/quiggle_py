@@ -1,7 +1,6 @@
-## local imports
-from quiggle.cli import CliController
-
-def cli(): CliController()
+def cli(): 
+    from quiggle.cli import CliController
+    CliController()
 
 if __name__ == '__main__':
     from quiggle.server import server
