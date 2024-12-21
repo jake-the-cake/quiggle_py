@@ -16,11 +16,10 @@ def read_local_file_variables(filename: str):
 
 def config_root(filename: str = 'config') -> str:
     paths: list = [
-        f'/config.py',
-        f'/{ filename }.py',
         f'/config/{ filename }.py',
         f'/{ filename }/config.py',
-        f'/quiggle/config/{ filename }.py'
+        f'/quiggle/config/{ filename }.py',
+        '/config.py'
     ]
 
     for path in paths:

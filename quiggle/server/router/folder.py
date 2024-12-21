@@ -1,8 +1,9 @@
 ## local imports
+from quiggle.config.root import get_config
+from quiggle.server.prompts import MESSAGES
+from quiggle.server.router import Router
 from quiggle.tools.logs.presets import infolog
 from quiggle.tools.reader.folder import FolderStructure
-from quiggle.server.router import Router, MESSAGES
-from quiggle.config.root import get_config
 
 ## global imports
 import os
@@ -13,7 +14,7 @@ class FolderRouter(Router):
 	def __init__(self, settings: dict) -> None:
 		self.settings = settings
 		self._check_required_settings()
-		self.route_dir: str = str(Path.cwd()) + self.settings['ROUTE_FOLDER']
+		self.route_dir: str = str(Path.cwd()) + '/server' + self.settings['ROUTE_FOLDER']
 		print(infolog(f'-- Initializing routes in { self.route_dir } folder.'))
 		super().__init__()
 

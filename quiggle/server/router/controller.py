@@ -1,9 +1,7 @@
 ## local imports
-from quiggle.server.router.folder import FolderRouter
 from quiggle.config.root import get_config
-from quiggle.server.router import not_set
-
-RouterType = FolderRouter
+from quiggle.server.router import not_set, RouterType
+# from quiggle.server.router import RouterType
 
 class RouteController:
 
@@ -15,14 +13,15 @@ class RouteController:
     route_folder = 'ROUTE_FOLDER'
 
     def __init__(self):
-        self.router: RouterType = self.set_router_type()
+        self.router: RouterType = self._set_router_type()
 
-    def set_router_type(self):
+    def _set_router_type(self):
         if not self.router_type in self.settings:
             raise not_set(self.router_type, self.settings['filename'])
         if self.settings[self.router_type] == 'folder':
             if not self.route_folder in self.settings:
                 raise not_set(self.route_folder, self.settings['filename'])
+            from quiggle.server.router.folder import FolderRouter
             return FolderRouter(self.settings)
 
     def find(self, request, response) -> None:

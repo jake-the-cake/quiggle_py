@@ -2,14 +2,9 @@
 
 ## local imports
 from .router import Router
-from quiggle.tools.logs.presets import labellog
+from .folder import FolderRouter
 
-def parsing_complete(type: str) -> None:
- return labellog(f'-- { type } parsing complete.')
+RouterType = FolderRouter | Router
 
 def not_set(key: str, filename: str):
     return Exception(f'Please set { key } in "{ filename }"')
-
-MESSAGES = {
-	'parsed': parsing_complete
-}

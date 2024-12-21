@@ -8,7 +8,11 @@ def connected(host: str, port: int, name: str) -> str:
 def connection_closed(connection: str) -> str:
 	return f'{ connection } connection closed.'
 
+def parsing_complete(type: str) -> None:
+ return labellog(f'-- { type } parsing complete.')
+
 MESSAGES = {
 	'connected': connected,
-	'closed': connection_closed
+	'closed': connection_closed,
+	'parsed': parsing_complete
 }
