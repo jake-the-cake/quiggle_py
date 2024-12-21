@@ -1,7 +1,6 @@
 /* High */
 .Quiggle main > strip chars in project name
 .Response > json response
-.HTTPController > API protocol
 .Injector > component tag
 
 /* Mid */

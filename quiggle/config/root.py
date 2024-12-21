@@ -18,6 +18,7 @@ def config_root(filename: str = 'config') -> str:
     paths: list = [
         f'/config/{ filename }.py',
         f'/{ filename }/config.py',
+        f'/quiggle/{ filename }/config.py',
         f'/quiggle/config/{ filename }.py',
         '/config.py'
     ]
