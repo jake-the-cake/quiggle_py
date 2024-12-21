@@ -1,14 +1,14 @@
 ## local imports
-from quiggle.config.root import get_config
 from quiggle.server.prompts import MESSAGES
 from quiggle.server.router import Router
-from quiggle.tools.logs.presets import infolog
+from quiggle.tools.logs.presets import infolog, errorlog
 from quiggle.server.handlers.response import HTMLResponse
 from quiggle.tools.reader.folder import FolderStructure
 
 ## global imports
 import os
 from pathlib import Path
+import importlib.util
 
 class FolderRouter(Router):
 
@@ -44,11 +44,29 @@ class FolderRouter(Router):
 				self._sort_route(route, 'api')
 		print(MESSAGES['parsed']('Route'))
 
-	def find_route(self, path: str) -> str:
+	def _get_callable(self, page_name: str, prefix: str, endpoint: Path):
+		file_path = endpoint / f'{ page_name }.py'
+		if endpoint.__str__() in self.routes[prefix]['static']:
+			module_name = file_path.stem
+			spec = importlib.util.spec_from_file_location(module_name, self.route_dir + file_path.__str__())
+			module = importlib.util.module_from_spec(spec)
+			spec.loader.exec_module(module)
+			return module
+
+	def find_route(self, path: str, method: str) -> str:
+		module = None
 		prefix = self.settings['API_ROUTE_PREFIX']
+
 		if self._has_special_prefix(path, prefix):
-			stripped_path = path.replace(f'/{ prefix }', '') or '/'
-			if stripped_path in self.routes[prefix]['static']: return stripped_path, HTMLResponse
+			module = self._get_callable(prefix, prefix, Path(path.replace(f'/{ prefix }', '') or '/'))
+		else:
+			module = self._get_callable('view', 'html', Path(path))
+
+		if module == None:
 			return None, HTMLResponse
-		''' find the matching path '''
-		return None, HTMLResponse
+
+
+		if hasattr(module, method.lower()):
+			return getattr(module, method.lower()), HTMLResponse
+		print(ReferenceError(errorlog(f'{ method } method not found in { path }')))
+		return 405, HTMLResponse

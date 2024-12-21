@@ -25,16 +25,19 @@ class HTTPServerController:
 
 	''' Looks up the route. '''
 	def handle_routing(self, router):
-		self.endpoint, response = router.find(self.request.path)
+		self.endpoint, response = router.find(self.request.path, self.request.method)
 		self.response = response(self.client_socket, self.request)
 		if self.endpoint == None:
 			self.response.status_code = 404
 			return
+		if isinstance(self.endpoint, int):
+			self.response.status_code = self.endpoint
+			self.endpoint = None
 		
 	def use_endpoint(self):
 		self.response.init_body(self.response.use_default_page())
-		# if self.endpoint != None:
-			# self.endpoint(self.request, self.response)
+		if self.endpoint != None:
+			self.endpoint(self.request, self.response)
 
 	''' Send final response over. '''
 	def send(self):

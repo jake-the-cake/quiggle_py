@@ -24,5 +24,5 @@ class RouteController:
             from quiggle.server.router.folder import FolderRouter
             return FolderRouter(self.settings)
 
-    def find(self, path: str) -> callable:
-        return self.router.find_route(path)
+    def find(self, path: str, method: str) -> callable:
+        return self.router.find_route(path, method)
