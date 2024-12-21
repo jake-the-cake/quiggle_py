@@ -3,6 +3,7 @@ from quiggle.config.root import get_config
 from quiggle.server.prompts import MESSAGES
 from quiggle.server.router import Router
 from quiggle.tools.logs.presets import infolog
+from quiggle.server.handlers.response import HTMLResponse
 from quiggle.tools.reader.folder import FolderStructure
 
 ## global imports
@@ -47,30 +48,7 @@ class FolderRouter(Router):
 		prefix = self.settings['API_ROUTE_PREFIX']
 		if self._has_special_prefix(path, prefix):
 			stripped_path = path.replace(f'/{ prefix }', '') or '/'
-			if stripped_path in self.routes[prefix]['static']: return stripped_path
-			
+			if stripped_path in self.routes[prefix]['static']: return stripped_path, HTMLResponse
+			return None, HTMLResponse
 		''' find the matching path '''
-
-		if self._is_dynamic_route(path):
-			return 'dynamic'
-		return 'path'
-
-
-	# def check_route(self, request, keys: list) -> bool:
-
-
-
-	# 	if keys[0] == '': keys = keys[1:]
-	# 	for key in routes.keys():
-	# 		if key == keys[0]:
-	# 			if len(keys) == 1: return True
-	# 			return self.check_route(routes[key], keys[1:])
-	# 	return False
-
-	# def find_route(self, request, response):
-	# 	keys = (request.path.split('/') + ['__main__'])[1:]
-	# 	if not self.check_route(self.routes, keys):
-	# 		response.status_code = 404
-	# 		return response.init_body(response.use_default_page())
-	# 	response.status_code = 200
-	# 	return response.init_body(response.use_default_page())
+		return None, HTMLResponse

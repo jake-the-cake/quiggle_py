@@ -51,11 +51,10 @@ class QuiggleServer:
 			controller: HTTPServerController = HTTPServerController(client_socket, client_address)
 			
 			controller.handle_request()
-			controller.choose_protocol()
 			controller.handle_routing(self.router)
 			for middleware in self.middlewares:
 				middleware(controller.request, controller.response)
-			
+			controller.use_endpoint()
 			controller.send()
 		except Exception as e:
 			print(errorlog(f'Error handling connection from { client_address[0] }:'), e)

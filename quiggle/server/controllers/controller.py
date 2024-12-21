@@ -1,15 +1,14 @@
 ## local imports
 from quiggle.server.controllers.connection import ConnectionLogger
 from quiggle.server.handlers.request import Request
-from quiggle.server.handlers.response import HTMLResponse
-from quiggle.server.router.controller import RouteController
 from quiggle.tools.logs.presets import errorlog
 from quiggle.types.server import ClientAddressType, ClientSocketType
 
 class HTTPServerController:
 	def __init__(self, client_socket, client_address):
 		self.request:                  Request = None
-		self.response:            HTMLResponse = None
+		self.response:                     any = None
+		self.endpoint:                     any = None
 		self.client_socket:   ClientSocketType = client_socket
 		self.client_address: ClientAddressType = client_address
 		self.connection:      ConnectionLogger = ConnectionLogger(client_address[0], 10)
@@ -26,18 +25,16 @@ class HTTPServerController:
 
 	''' Looks up the route. '''
 	def handle_routing(self, router):
-		router.find(self.request, self.response)
-
-	''' Generate an http response. '''
-	def choose_protocol(self) -> None:
-		split_path = self.request.path.split('/')
-		if split_path[0] == 'api':
-			self.protocol = 'api'
-			# TODO: API protocol
-			self.response = None
-		else:
-			self.protocol = 'html'
-			self.response = HTMLResponse(self.client_socket, self.request)
+		self.endpoint, response = router.find(self.request.path)
+		self.response = response(self.client_socket, self.request)
+		if self.endpoint == None:
+			self.response.status_code = 404
+			return
+		
+	def use_endpoint(self):
+		self.response.init_body(self.response.use_default_page())
+		# if self.endpoint != None:
+			# self.endpoint(self.request, self.response)
 
 	''' Send final response over. '''
 	def send(self):
