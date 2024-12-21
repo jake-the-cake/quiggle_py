@@ -9,6 +9,9 @@ class Router:
 		self.tree:   dict = self._set_tree()
 		self._set_routes()
 
+	def _has_special_prefix(self, path: str, prefix: str) -> bool:
+		return path.startswith(f'/{ prefix }/') or path == f'/{ prefix }'
+
 	def _set_tree(self, tree = None):
 		if tree == None:
 			raise Exception(f'{ errorlog(f'No tree found.') } >>> { Router._set_tree.__str__() }')	

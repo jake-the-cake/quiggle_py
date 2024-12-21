@@ -1,18 +1,14 @@
 ## local imports
-from quiggle.config.read import read_local_file_variables
 from quiggle.server.router.folder import FolderRouter
-from quiggle.config.root import config_root
-
-def not_set(key: str, filename: str):
-    return Exception(f'Please set a { key } in "{ filename }"')
+from quiggle.config.root import get_config
+from quiggle.server.router import not_set
 
 RouterType = FolderRouter
 
 class RouteController:
 
     # get a list of variables from the config file
-    config_file: str = config_root('globals')
-    settings:   list = read_local_file_variables(config_file)
+    settings: list = get_config('server')
 
     # constant variables to find settings
     router_type = 'ROUTER_TYPE'
@@ -23,11 +19,11 @@ class RouteController:
 
     def set_router_type(self):
         if not self.router_type in self.settings:
-            raise not_set(self.router_type, self.config_file)
+            raise not_set(self.router_type, self.settings['filename'])
         if self.settings[self.router_type] == 'folder':
             if not self.route_folder in self.settings:
-                raise not_set(self.route_folder, self.config_file)
-            return FolderRouter(self.settings[self.route_folder])
+                raise not_set(self.route_folder, self.settings['filename'])
+            return FolderRouter(self.settings)
 
     def find(self, request, response) -> None:
         path = self.router.find_route(request.path)

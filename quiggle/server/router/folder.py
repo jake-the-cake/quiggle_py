@@ -1,7 +1,8 @@
 ## local imports
-from quiggle.tools.logs.presets import infolog, labellog, errorlog
+from quiggle.tools.logs.presets import infolog
 from quiggle.tools.reader.folder import FolderStructure
-from quiggle.server.router import Router, MESSAGES, parsing_complete
+from quiggle.server.router import Router, MESSAGES
+from quiggle.config.root import get_config
 
 ## global imports
 import os
@@ -9,11 +10,21 @@ from pathlib import Path
 
 class FolderRouter(Router):
 
-	def __init__(self, route_dir) -> None:
-		self.route_dir: str = str(Path.cwd()) + route_dir
-		print(self.route_dir)
+	def __init__(self, settings: dict) -> None:
+		self.settings = settings
+		self._check_required_settings()
+		self.route_dir: str = str(Path.cwd()) + self.settings['ROUTE_FOLDER']
 		print(infolog(f'-- Initializing routes in { self.route_dir } folder.'))
 		super().__init__()
+
+	def _check_required_settings(self):
+		keys = [
+			'API_ROUTE_PREFIX',
+		]
+		for key in keys:
+			if key not in self.settings:
+				from quiggle.server.router import not_set
+				raise not_set(key, self.settings['filename'])
 
 	def _set_tree(self):
 		tree = FolderStructure().parse(self.route_dir)
@@ -31,10 +42,11 @@ class FolderRouter(Router):
 				self._sort_route(route, 'api')
 		print(MESSAGES['parsed']('Route'))
 
-	def find_route(self, path: str) -> str:		
-		if path.startswith('/api/') or path == '/api':
-			stripped_path = path.replace('/api', '') or '/'
-			if stripped_path in self.routes['api']['static']: return stripped_path
+	def find_route(self, path: str) -> str:
+		prefix = self.settings['API_ROUTE_PREFIX']
+		if self._has_special_prefix(path, prefix):
+			stripped_path = path.replace(f'/{ prefix }', '') or '/'
+			if stripped_path in self.routes[prefix]['static']: return stripped_path
 			
 		''' find the matching path '''
 
