@@ -1,8 +1,8 @@
 ## local imports
 from quiggle.server.prompts import MESSAGES
 from quiggle.server.router import Router
-from quiggle.tools.logs.presets import infolog, errorlog
-from quiggle.server.handlers.response import HTMLResponse
+from quiggle.tools.logs.presets import infolog, errorlog, questionlog
+from quiggle.server.handlers.response import Response
 from quiggle.tools.reader.folder import FolderStructure
 
 ## global imports
@@ -65,10 +65,9 @@ class FolderRouter(Router):
 			module = self._get_callable('view', 'html', Path(path))
 
 		if module == None:
-			return None, HTMLResponse
+			return 404
 
-
-		if hasattr(module, method):
-			return getattr(module, method), HTMLResponse
-		print(ReferenceError(errorlog(f'"{ method }" method not found in { path }')))
-		return 405, HTMLResponse
+		if module != None and hasattr(module, method):
+			return getattr(module, method)
+		print(questionlog(f'"{ method }" method not found in { path }'))
+		return 405

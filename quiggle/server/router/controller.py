@@ -25,4 +25,10 @@ class RouteController:
             return FolderRouter(self.settings)
 
     def find(self, path: str, method: str) -> callable:
-        return self.router.find_route(path, method)
+        action = self.router.find_route(path, method)
+
+    def find_route(self, path: str):
+        return True
+    
+    def find_endpoint(self, method: str):
+        return 200

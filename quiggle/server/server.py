@@ -36,9 +36,9 @@ class QuiggleServer:
 	def _accept_connections(self):
 		try:
 			while True:
-				client_socket, client_address = self.server_socket.accept_connections()
 				threading.Thread(
-					target=self._handle_connection, args=(client_socket, client_address)
+					target=self._handle_connection,
+					args=(self.server_socket.accept_connections())
 				).start()
 		except KeyboardInterrupt:
 			print("Shutting down server...")
@@ -49,12 +49,9 @@ class QuiggleServer:
 		try:
 			# create new controller instance
 			controller: HTTPServerController = HTTPServerController(client_socket, client_address)
-			
-			controller.handle_request()
-			controller.handle_routing(self.router)
+			controller.setup(self.router)
 			for middleware in self.middlewares:
 				middleware(controller.request, controller.response)
-			controller.use_endpoint()
 			controller.send()
 		except Exception as e:
 			print(errorlog(f'Error handling connection from { client_address[0] }:'), e)

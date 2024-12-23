@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.tools.codes.create import generate_code
-from quiggle.tools.logs.presets import infolog, buglog, labellog
+from quiggle.tools.logs.presets import infolog, buglog, labellog, questionlog
 
 ## global imports
 import datetime, time
@@ -17,6 +17,7 @@ class ConnectionLogger:
 		self.id:        str = generate_code(length=code_length, mode='upper')
 		self.address:   str = client_address
 		self.timestamp: str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+		self.message = questionlog(self.id) + ' :: '
 		self.start_timer()
 		self.log_connection()
 	
@@ -34,8 +35,9 @@ class ConnectionLogger:
 	def log_connection(self) -> None:
 		print(buglog(' '.join([self.PREFIX['connect'], self.address,'::', self.id, self.timestamp])))
 
-	def log_request(self, method: str, path: str) -> None:
-		print(infolog(self.PREFIX['request']), self.id, method, path, self.get_milliseconds(1))
+	def add_request_info(self, method: str, path: str) -> None:
+		self.message += f' {infolog(self.PREFIX['request']) } { method } { path }'
 	
 	def log_response(self, status_code: str, status: str) -> None:
-		print(labellog(self.PREFIX['response']), self.id, status_code, status, self.get_milliseconds(1))
+		self.message += f' { labellog(self.PREFIX['response']) } { status_code } { status } { self.get_milliseconds(1) }'
+		print(self.message)

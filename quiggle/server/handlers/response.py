@@ -1,15 +1,14 @@
 ## local imports
-from .headers import Headers
+from quiggle.server.handlers.headers import Headers
 from quiggle.tools.logs.presets import errorlog
 from quiggle.config import globals
 from quiggle.server.render.injector import HTMLInjector
 
-class HTMLResponse(Headers):
+class Response(Headers):
 
-	def __init__(self, client_socket, request):
+	def __init__(self):
 		super().__init__()
-		self.client_socket: any = client_socket
-		self.request:       any = request
+		# self.request:       any = request
 		self.status_code:   int = 500
 		self.body:         dict = { 'raw': '', 'final': '' }
 		# Default headers
@@ -21,6 +20,8 @@ class HTMLResponse(Headers):
 		with open(globals.QUIGGLE_DIR + f'/static/status.html') as file:
 			return file.read().replace('\n', '').replace('\t', '')
 
+
+
 	def render_html():
 		pass
 
@@ -31,7 +32,7 @@ class HTMLResponse(Headers):
 
 
 	''' Sends the HTTP response. '''
-	def send(self):
+	def send(self, client_socket):
 		try:
 			status_message = Headers.get_status_message(self.status_code)
 			# self.init_body(self.use_default_page())
@@ -55,6 +56,6 @@ class HTMLResponse(Headers):
 					f'{ self.body['final'] }'
 			)
 
-			self.client_socket.sendall(response.encode())
+			client_socket.sendall(response.encode())
 		except Exception as e:
 			print(errorlog('Error sending response:'), e)

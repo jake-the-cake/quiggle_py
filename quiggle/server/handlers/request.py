@@ -7,17 +7,16 @@ class Request:
 		This class parses raw HTTP request data and extracts key components such as headers, HTTP method, request path, and the request body. It also provides functionality for handling authentication tokens, if included in the headers.
 	'''
 
-	def __init__(self, raw_data: str):
+	def __init__(self):
 
 		# Initialize request variables
-		self.headers:      dict = {}
-		self.method: str | None = None
-		self.path:   str | None = None
-		self.token:  str | None = None
-		self.body:   str | None = None
+		self.path:     str = None
+		self.method:   str = None
+		self.body:     str = None
+		self.headers: dict = {}
 
-		# Parse the raw HTTP request data to populate instance attributes
-		self._parse_request(raw_data)
+	def load(self, data: str) -> None:
+		self._parse_request(data)
 
 	''' Parses HTTP headers from the request data. '''
 	def _parse_headers(self, header_lines) -> None:
