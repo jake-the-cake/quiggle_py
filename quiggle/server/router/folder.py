@@ -58,15 +58,17 @@ class FolderRouter(Router):
 		prefix = self.settings['API_ROUTE_PREFIX']
 
 		if self._has_special_prefix(path, prefix):
+			method = method.lower()
 			module = self._get_callable(prefix, prefix, Path(path.replace(f'/{ prefix }', '') or '/'))
 		else:
+			method = 'view'
 			module = self._get_callable('view', 'html', Path(path))
 
 		if module == None:
 			return None, HTMLResponse
 
 
-		if hasattr(module, method.lower()):
-			return getattr(module, method.lower()), HTMLResponse
-		print(ReferenceError(errorlog(f'{ method } method not found in { path }')))
+		if hasattr(module, method):
+			return getattr(module, method), HTMLResponse
+		print(ReferenceError(errorlog(f'"{ method }" method not found in { path }')))
 		return 405, HTMLResponse

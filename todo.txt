@@ -1,12 +1,12 @@
 /* High */
-.Quiggle main > strip chars in project name
+.Quiggle main > rebuild
 .Response > json response
 .Injector > component tag
 
 /* Mid */
+.QuiggleServer > middleware
 .CLI > help menu
 .Toolkit > create and add get_elapse_time from HTTPController
-.QuiggleServer > middleware
 *** find home > timestamp dict
 
 /* Low */
