@@ -6,13 +6,12 @@ from quiggle.server.render.injector import HTMLInjector
 
 class Response(Headers):
 
-	def __init__(self):
+	def __init__(self, client_socket):
 		super().__init__()
-		# self.request:       any = request
+		self.client_socket = client_socket
 		self.status_code:   int = 500
 		self.body:         dict = { 'raw': '', 'final': '' }
 		# Default headers
-		self.set("Content-Type", "text/html")
 		self.set("Connection", "close")
 
 	''' Returns html from file. '''
@@ -20,7 +19,8 @@ class Response(Headers):
 		with open(globals.QUIGGLE_DIR + f'/static/status.html') as file:
 			return file.read().replace('\n', '').replace('\t', '')
 
-
+	def html(self, path: str, variables: dict = {}):
+		self.send()
 
 	def render_html():
 		pass
@@ -32,7 +32,7 @@ class Response(Headers):
 
 
 	''' Sends the HTTP response. '''
-	def send(self, client_socket):
+	def send(self):
 		try:
 			status_message = Headers.get_status_message(self.status_code)
 			# self.init_body(self.use_default_page())
@@ -56,6 +56,6 @@ class Response(Headers):
 					f'{ self.body['final'] }'
 			)
 
-			client_socket.sendall(response.encode())
+			self.client_socket.sendall(response.encode())
 		except Exception as e:
 			print(errorlog('Error sending response:'), e)

@@ -32,3 +32,6 @@ class RouteController:
     
     def find_endpoint(self, method: str):
         return 200
+    
+    def set_response_type(self, response_type: str) -> None:
+        self.router.set("Content-Type", response_type)

@@ -12,9 +12,8 @@ class HTTPServerController:
 		self.client_socket:   ClientSocketType = client_socket
 		self.client_address: ClientAddressType = client_address
 		self.request:                  Request = Request()
-		self.response:                Response = Response()
+		self.response:                Response = Response(self.client_socket)
 		self.connection:      ConnectionLogger = ConnectionLogger(client_address[0], 10)
-		
 		
 		self.endpoint:                     any = None
 
@@ -45,12 +44,14 @@ class HTTPServerController:
 			data = self.client_socket.recv(1024).decode()
 			if data:
 				self.request.load(data)
+				print(self.request.accept())
 				self.connection.add_request_info(self.request.method, self.request.path)
 		except Exception as e:
 			print(errorlog(f'Error handling request from { self.client_address[0] }:'), e)
 
 	''' Looks up the route. '''
 	def handle_routing(self, router):
+		router.set_response_type(self.request.accept())
 		router.find(self.request.path, self.request.method)
 		if self.endpoint == None:
 			self.response.status_code = 404
@@ -66,5 +67,5 @@ class HTTPServerController:
 
 	''' Send final response over. '''
 	def send(self):
-		self.response.send(self.client_socket)
+		self.response.send()
 		self.connection.log_response(self.response.status_code, self.response.STATUS_MESSAGES[self.response.status_code])

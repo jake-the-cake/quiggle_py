@@ -3,12 +3,12 @@ from quiggle.tools.logs.presets import errorlog
 
 class Request:
 
+	_joint = '\r\n'
+	
 	'''
 		This class parses raw HTTP request data and extracts key components such as headers, HTTP method, request path, and the request body. It also provides functionality for handling authentication tokens, if included in the headers.
 	'''
-
 	def __init__(self):
-
 		# Initialize request variables
 		self.path:     str = None
 		self.method:   str = None
@@ -18,6 +18,16 @@ class Request:
 	def load(self, data: str) -> None:
 		self._parse_request(data)
 
+	def accept(self):
+		accept = "Accept"
+		if accept in self.headers:
+			return self.headers[accept].split(',')[0]
+		return 'application/json'
+
+
+	def _split_data_lines(self, data: str) -> list:
+		return data.split(self._joint)
+	
 	''' Parses HTTP headers from the request data. '''
 	def _parse_headers(self, header_lines) -> None:
 		# Loop through each header line and extract key-value pairs
@@ -36,7 +46,7 @@ class Request:
 	def _parse_request(self, raw_data: str):
 		try:
 			# Split raw data into lines
-			lines = raw_data.split("\r\n")
+			lines = self._split_data_lines(raw_data)
 			
 			# Parse the request line (e.g., "GET /index.html HTTP/1.1")
 			self.method, self.path, _ = lines[0].split()
