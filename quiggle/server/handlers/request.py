@@ -15,8 +15,9 @@ class Request:
 		self.body:     str = None
 		self.headers: dict = {}
 
-	def load(self, data: str) -> None:
+	def load(self, data: str):
 		self._parse_request(data)
+		return self
 
 	def accept(self):
 		accept = "Accept"

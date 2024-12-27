@@ -11,16 +11,17 @@ class HTTPServerController:
 	def __init__(self, client_socket, client_address):
 		self.client_socket:   ClientSocketType = client_socket
 		self.client_address: ClientAddressType = client_address
-		self.request:                  Request = Request()
-		self.response:                Response = Response(self.client_socket)
+		# self.request:                  Request = Request()
+		self.request:                  Request = self._handle_request(client_socket)
+		# self.response:                Response = Response(self.client_socket)
+		self.response:                Response = Response(client_socket)
 		self.connection:      ConnectionLogger = ConnectionLogger(client_address[0], 10)
 		
 		self.endpoint:                     any = None
 
-	def setup(self, router: RouteController) -> None:
-		self._handle_request()
-		self.response.endpoint = self._load_endpoint(router)
-		self.end()
+	# def setup(self, router: RouteController) -> None:
+	# 	self._handle_request()
+	# 	self.response.endpoint = self._load_endpoint(router)
 
 	
 	def end(self) -> None:
@@ -29,7 +30,7 @@ class HTTPServerController:
 		self.response.init_body(self.response.use_default_page())
 
 
-	def _load_endpoint(self, router: RouteController) -> None:
+	def load_endpoint(self, router: RouteController) -> None:
 		if router.find_route(self.request.path):
 			endpoint = router.find_endpoint(self.request.method)
 			if endpoint:
@@ -39,12 +40,14 @@ class HTTPServerController:
 		# router.find('/', 'get')
 
 	''' Parse request data. '''
-	def _handle_request(self) -> None:
+	def _handle_request(self, client_socket) -> None:
 		try:
-			data = self.client_socket.recv(1024).decode()
+			data = client_socket.recv(1024).decode()
+			print(data)
 			if data:
-				self.request.load(data)
-				print(self.request.accept())
+				request = Request().load(data)
+				# self.request.load(data)
+				print(request.accept())
 				self.connection.add_request_info(self.request.method, self.request.path)
 		except Exception as e:
 			print(errorlog(f'Error handling request from { self.client_address[0] }:'), e)
