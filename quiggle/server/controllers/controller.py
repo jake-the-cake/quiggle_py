@@ -31,7 +31,7 @@ class HTTPServerController:
 
 
 	def load_endpoint(self, router: RouteController) -> None:
-		if router.find_route(self.request.path):
+		if router.find_route('/'):
 			endpoint = router.find_endpoint(self.request.method)
 			if endpoint:
 				return endpoint
@@ -47,8 +47,9 @@ class HTTPServerController:
 			if data:
 				request = Request().load(data)
 				# self.request.load(data)
-				print(request.accept())
+				print(request.__dict__)
 				self.connection.add_request_info(self.request.method, self.request.path)
+				return request
 		except Exception as e:
 			print(errorlog(f'Error handling request from { self.client_address[0] }:'), e)
 
