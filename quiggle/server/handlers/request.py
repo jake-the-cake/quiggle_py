@@ -17,7 +17,6 @@ class Request:
 
 	def load(self, data: str):
 		self._parse_request(data)
-		return self
 
 	def accept(self):
 		accept = "Accept"

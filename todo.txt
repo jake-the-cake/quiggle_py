@@ -10,6 +10,7 @@
 *** find home > timestamp dict
 
 /* Low */
+.Response > default page from config
 .Request > web token
 .Socket > kill port
 .Socket > retry connection

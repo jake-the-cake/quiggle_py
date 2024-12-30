@@ -48,13 +48,10 @@ class QuiggleServer:
 	def _handle_connection(self, client_socket: ClientSocketType, client_address: ClientAddressType):
 		try:
 			# create new controller instance
-			controller: HTTPServerController = HTTPServerController(client_socket, client_address)
-			# controller.setup(self.router)
-			controller.load_endpoint(self.router)
+			controller: HTTPServerController = HTTPServerController(client_socket, client_address, self.router)
 			for middleware in self.middlewares:
 				middleware(controller.request, controller.response)
 			controller.end()
-			controller.send()
 		except Exception as e:
 			print(errorlog(f'Error handling connection from { client_address[0] }:'), e)
 			raise e

@@ -8,14 +8,20 @@ class Response(Headers):
 
 	def __init__(self, client_socket):
 		super().__init__()
-		self.client_socket = client_socket
-		self.status_code:   int = 500
-		self.body:         dict = { 'raw': '', 'final': '' }
+		self.client_socket    = client_socket
+		self.status_code: int = 500
+		self.body:       dict = { 'raw': '', 'final': '' }
 		# Default headers
 		self.set("Connection", "close")
 
-	''' Returns html from file. '''
-	def use_default_page(self) -> str:
+	def default(self, status: int = None) -> None:
+		if status != None: self.status_code = status
+		self.init_body(self._use_default_page())
+		self.send()
+
+	''' Returns html from default status pages. '''
+	def _use_default_page(self) -> str:
+		# TODO: check if another default page is being used
 		with open(globals.QUIGGLE_DIR + f'/static/status.html') as file:
 			return file.read().replace('\n', '').replace('\t', '')
 
