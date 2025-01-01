@@ -13,12 +13,19 @@ class Headers:
 		500: "Internal Server Error",
 	}
 
+	_joint = '\r\n'
+
 	def __init__(self):
 		self.headers = {}
+		self.code(500)
 			
 	''' Sets a header key-value pair. '''
-	def set(self, key: str, value: str) -> None:
-		self.headers[key] = value
+	def header(self, key: str, value: str = True) -> str:
+		if value == False:
+			return self.remove(key)
+		if value != True:
+			self.headers[key] = value
+		return self.get(key)
 
 	''' Gets the value of a header key. '''
 	def get(self, key: str) -> str:
@@ -31,9 +38,18 @@ class Headers:
 
 	''' Formats headers as an HTTP-compatible string. '''
 	def format(self) -> str:
-		return "\r\n".join(f"{key}: {value}" for key, value in self.headers.items())
+		return self._joint.join(f"{key}: {value}" for key, value in self.headers.items()) + self._joint
+	
+	def _get_status_message(self, code):
+		if code in self.STATUS_MESSAGES.keys():
+			return self.STATUS_MESSAGES[code]
+		return 'Unknown Status'
 
-	''' Returns the status message for a given status code. '''
-	@classmethod
-	def get_status_message(cls, status_code: int) -> str:
-		return cls.STATUS_MESSAGES.get(status_code, "Unknown Status")
+	def code(self, code: int):
+		try:
+			code = int(code)
+			self.status_code = code
+			self.status_message = self._get_status_message(code)
+			return self
+		except:
+			raise ValueError('Status code must be an integer.')

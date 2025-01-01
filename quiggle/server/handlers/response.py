@@ -4,64 +4,60 @@ from quiggle.tools.logs.presets import errorlog
 from quiggle.config import globals
 from quiggle.server.render.injector import HTMLInjector
 
+## global imports
+import json
+
 class Response(Headers):
+
+	DEFAULT_PAGE = globals.QUIGGLE_DIR + f'/static/status.html'
+	
+	@staticmethod
+	def _trim_html(html: str) -> str:
+		return html.replace('\n', '').replace('\t', '')
 
 	def __init__(self, client_socket):
 		super().__init__()
-		self.client_socket    = client_socket
-		self.status_code: int = 500
-		self.body:       dict = { 'raw': '', 'final': '' }
-		# Default headers
-		self.set("Connection", "close")
+		self.client_socket = client_socket
+		self.body:     str = ''
+		self.header("Connection", "close")
 
-	def default(self, status: int = None) -> None:
-		if status != None: self.status_code = status
-		self.init_body(self._use_default_page())
+	def _inject(self, html: str, variables: dict = {}):
+		injector = HTMLInjector(html, variables)
+		self.body = injector.inject()
+
+	def html(self, html: str, variables: dict = {}):
+		self.header('Content-Type', 'text/html')
+		self._inject(html, variables)
 		self.send()
 
-	''' Returns html from default status pages. '''
-	def _use_default_page(self) -> str:
+	def default(self, code: int = None) -> None:
+		if code == None: code = self.status_code
+		self.code(code)
 		# TODO: check if another default page is being used
-		with open(globals.QUIGGLE_DIR + f'/static/status.html') as file:
-			return file.read().replace('\n', '').replace('\t', '')
+		self.html(self._use_default_page(), {
+			'status_code': str(self.status_code),
+			'status_message': self.status_message })
 
-	def html(self, path: str, variables: dict = {}):
+	''' Returns html from default quiggle status pages. '''
+	def _use_default_page(self) -> str:
+		with open(self.DEFAULT_PAGE) as file:
+			return Response._trim_html(file.read())
+		
+	def render(self, path: str, variables: dict = {}) -> None:
+		html = ''
+		self.html(html, variables)
+
+	def json(self, data: dict) -> None:
+		self.header('Content-Type', 'application/json')
+		self.body = json.dumps(data)
 		self.send()
-
-	def render_html():
-		pass
-
-	''' Set the body data for both raw and final '''
-	def init_body(self, value: str) -> None:
-		self.body['raw'] = value
-		self.body['final'] = value
-
 
 	''' Sends the HTTP response. '''
 	def send(self):
 		try:
-			status_message = Headers.get_status_message(self.status_code)
-			# self.init_body(self.use_default_page())
-
-			# inject content and variables
-			variables = {
-				'status_code': str(self.status_code),
-				'status_message': status_message
-			}
-			injector = HTMLInjector(variables)
-			injector.inject(self.body)
-
-			# Format headers
-			self.set('Content-Length', len(self.body['final']))
-			header_str = self.format()
-
-			# Construct the response
-			response = (
-					f'HTTP/1.1 { self.status_code } { status_message }\r\n'
-					f'{ header_str }\r\n\r\n'
-					f'{ self.body['final'] }'
-			)
-
+			self.header('Content-Length', len(self.body))
+			status_line = f'HTTP/1.1 { self.status_code } { self.status_message }'
+			response = self._joint.join([status_line, self.format(), self.body])
 			self.client_socket.sendall(response.encode())
 		except Exception as e:
 			print(errorlog('Error sending response:'), e)

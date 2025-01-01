@@ -24,14 +24,8 @@ class RouteController:
             from quiggle.server.router.folder import FolderRouter
             return FolderRouter(self.settings)
 
-    def find(self, path: str, method: str) -> callable:
-        action = self.router.find_route(path, method)
-
-    def find_route(self, path: str):
-        return True
-    
-    def find_endpoint(self, method: str):
-        return 200
-    
+    def find_route(self, path: str, method: str):
+        return self.router.find_route(path, method)
+        
     def set_response_type(self, response_type: str) -> None:
         self.router.set("Content-Type", response_type)

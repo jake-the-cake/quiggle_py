@@ -10,7 +10,7 @@ class HTTPServerController:
 		self.connection: ConnectionLogger = ConnectionLogger(client_address[0], 10)
 		self.request:             Request = self._handle_request(client_socket)
 		self.response:           Response = Response(client_socket)
-		self.endpoint:     callable | int = self._load_endpoint(router)
+		self.response.endpoint            = self._load_endpoint(router)
 	
 	''' Parse request data. '''
 	def _handle_request(self, client_socket) -> None:
@@ -26,22 +26,17 @@ class HTTPServerController:
 			print(errorlog(f'Error handling request from { self.client_address[0] }:'), e)
 	
 	def _load_endpoint(self, router: RouteController) -> None:
-		if router.find_route(self.request.path):
-			endpoint = router.find_endpoint(self.request.method)
-			if endpoint:
-				return endpoint
-			return 405
-		return 404
+		return router.find_route(self.request.path, self.request.method)
 
 	''' Execute the located method '''
 	def _use_endpoint(self) -> None:
-		self.endpoint(self.request, self.response)
+		self.response.endpoint(self.request, self.response)
 	
 	''' Triggers a default page for misc status codes or a route method to be executed. '''
 	def end(self) -> None:
-		if isinstance(self.endpoint, int):
-			self.response.status_code = self.endpoint
-			self.response.default(self.endpoint)
+		if isinstance(self.response.endpoint, int):
+			self.response.status_code = self.response.endpoint
+			self.response.default(self.response.endpoint)
 		else: 
 			self._use_endpoint()
 		self.connection.log_response(self.response.status_code, self.response.STATUS_MESSAGES[self.response.status_code])

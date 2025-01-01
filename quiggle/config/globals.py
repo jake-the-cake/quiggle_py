@@ -1,4 +1,4 @@
 from quiggle.config.root import get_quiggle_dir
 
-VERSION_NUMBER = '0.4.7'
+VERSION_NUMBER = '0.4.8'
 QUIGGLE_DIR = get_quiggle_dir()

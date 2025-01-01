@@ -3,14 +3,19 @@ from quiggle.tools.logs.presets import errorlog
 
 class HTMLInjector:
 	
-	def __init__(self, variables=None):
-		self.variables: dict = variables or {}
+	def __init__(self, html: str, variables: dict = None):
+		self._init_html(html)
+		self.variables: dict = variables
 		self.position: int   = 0
 		self.hold_pos: int   = 0
 		self.instances: dict = {}
 		self.tags            = { 
 				'use': self.use_use
 			}
+		
+	def _init_html(self, html: str) -> None:
+		self.original_html = html
+		self.updated_html = html
 
 	def use_use(self, variable, attributes):
 		values = []
@@ -36,14 +41,14 @@ class HTMLInjector:
 		return values
 
 	def is_position_lt_len(self) -> bool:
-		return len(self.html['raw']) - 1 > self.position
+		return len(self.original_html) - 1 > self.position
 
 	def get_char(self) -> str:
-		return self.html['raw'][self.position]
+		return self.original_html[self.position]
 
 	def get_next_char(self) -> str:
 		if self.is_position_lt_len():
-			return self.html['raw'][self.position + 1]
+			return self.original_html[self.position + 1]
 		return self.get_char()
 	
 	def increment_positions(self) -> None:
@@ -52,7 +57,7 @@ class HTMLInjector:
 			self.hold_pos = self.position
 
 	def find_tags(self) -> None:
-		while self.position < len(self.html['raw']) - 1:
+		while self.position < len(self.original_html) - 1:
 			self.find_open_tag('<')
 
 	def find_open_tag(self, tag: str) -> None:
@@ -66,7 +71,7 @@ class HTMLInjector:
 			return self.increment_positions() 
 		if self.get_char() != ' ':
 			return self.find_next_blank()
-		tag = self.html['raw'][self.hold_pos + 1 : self.position]
+		tag = self.original_html[self.hold_pos + 1 : self.position]
 		if tag in self.tags.keys():
 			if tag not in self.instances.keys():
 				self.instances[tag] = []
@@ -76,11 +81,11 @@ class HTMLInjector:
 	def find_closing_tag(self, tag: str):
 		self.position += 1
 		if self.get_char() == '/' and self.get_next_char() == '>':
-			self.instances[tag].append(self.html['raw'][self.hold_pos : self.position + 2])
+			self.instances[tag].append(self.original_html[self.hold_pos : self.position + 2])
 			return self.increment_positions()
 		return self.find_closing_tag(tag)
 
-	def inject(self, html: str) -> None:
+	def inject(self) -> None:
 
 		def clean_attributes(attributes: list):
 			attributes = [item for item in attributes if item != '']
@@ -98,7 +103,6 @@ class HTMLInjector:
 				if len(attributes) == length:	break
 			return attributes
 
-		self.html = html
 		self.find_tags()
 		for tag in self.instances.keys():
 			for instance in self.instances[tag]:
@@ -107,6 +111,7 @@ class HTMLInjector:
 					variable      = split_string[1]
 					attributes = clean_attributes(' '.join(split_string[2:]).replace('=', ' ').split(' '))
 					values = self.tags[tag](variable, attributes)
-					self.html['final'] = self.html['final'].replace(instance, ' '.join(values))
+					self.updated_html = self.updated_html.replace(instance, ' '.join(values))
 				except Exception as e:
 					print(errorlog(f'Could not parse "{ tag }" tag:'), e)
+		return self.updated_html

@@ -27,13 +27,22 @@
 		.light-text {
 			color: #555;
 		}
+		.flex {
+			display: flex;
+			gap: .5rem;
+			justify-content: center;
+			align-items: center;
+		}
 	</style>
 </head>
 <body>
 	<h1>Automated Response</h1>
 	<h3 class="light-text">From Quiggle</h3>
-	<div class="red">
-		<use status_code or='999' and=status_message or='Unknown Error' />
+	<div class="flex">
+		<div class="red">
+			<use status_code or='999' />
+		</div>
+		<b><use status_message or='Unknown Error' /></b>
 	</div>
 </body>
 </html>
