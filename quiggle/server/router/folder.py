@@ -66,8 +66,7 @@ class FolderRouter(Router):
 
 		if module == None:
 			return 404
-
-		if module != None and hasattr(module, method):
+		elif hasattr(module, method):
 			return getattr(module, method)
-		print(questionlog(f'"{ method }" method not found in { path }'))
-		return 405
+		else:
+			return 405
