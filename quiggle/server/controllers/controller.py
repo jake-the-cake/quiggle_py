@@ -17,8 +17,8 @@ class HTTPServerController:
 		try:
 			data = client_socket.recv(1024).decode()
 			if data:
-				request = Request()
-				request.load(data)
+				request = Request(data)
+				# request.load(data)
 				self.connection.add_request_info(request.method, request.path)
 				return request
 			raise LookupError('Could not find request data.')
@@ -26,6 +26,7 @@ class HTTPServerController:
 			print(errorlog(f'Error handling request from { self.client_address[0] }:'), e)
 	
 	def _load_endpoint(self, router: RouteController) -> None:
+		self.response.protocol = self.request.accept()
 		return router.find_route(self.request.path, self.request.method)
 
 	''' Execute the located method '''

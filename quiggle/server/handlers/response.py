@@ -17,9 +17,10 @@ class Response(Headers):
 
 	def __init__(self, client_socket):
 		super().__init__()
-		self.client_socket = client_socket
-		self.body:     str = ''
-		self.header("Connection", "close")
+		self.client_socket            = client_socket
+		self.body:                str = ''
+		self.protocol:            str = None
+		self.endpoint: callable | int = None
 
 	def _inject(self, html: str, variables: dict = {}):
 		injector = HTMLInjector(html, variables)
@@ -31,12 +32,17 @@ class Response(Headers):
 		self.send()
 
 	def default(self, code: int = None) -> None:
-		if code == None: code = self.status_code
-		self.code(code)
-		# TODO: check if another default page is being used
-		self.html(self._use_default_page(), {
-			'status_code': str(self.status_code),
-			'status_message': self.status_message })
+		if code != None:
+			self.code(code)
+		variables = {
+				'status_code': str(self.status_code),
+				'status_message': self.status_message
+		}
+		if 'html' in self.protocol:
+			# TODO: check if another default page is being used
+			self.html(self._use_default_page(), variables)
+		else:
+			self.json(variables)
 
 	''' Returns html from default quiggle status pages. '''
 	def _use_default_page(self) -> str:
@@ -55,6 +61,7 @@ class Response(Headers):
 	''' Sends the HTTP response. '''
 	def send(self):
 		try:
+			self.header("Connection", "close")
 			self.header('Content-Length', len(self.body))
 			status_line = f'HTTP/1.1 { self.status_code } { self.status_message }'
 			response = self._joint.join([status_line, self.format(), self.body])
