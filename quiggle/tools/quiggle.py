@@ -1,4 +1,10 @@
+class Toolkit:
+
+    pass
+
 class Quiggle:
 
     def __init__(self):
-        self.errors = None
+        self.errors = {}
+        self.toolkit = Toolkit()
+        self.settings = {}
