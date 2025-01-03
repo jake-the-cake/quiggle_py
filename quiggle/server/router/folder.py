@@ -55,6 +55,7 @@ class FolderRouter(Router):
 
 	def find_route(self, request) -> str:
 		module = None
+		method = request.method
 		prefix = self.settings['API_ROUTE_PREFIX']
 
 		if self._has_special_prefix(request.path, prefix):
