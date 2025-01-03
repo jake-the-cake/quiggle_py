@@ -11,8 +11,12 @@ def connection_closed(connection: str) -> str:
 def parsing_complete(type: str) -> None:
  return labellog(f'-- { type } parsing complete.')
 
+def parsing_failed(type: str) -> None:
+ return f'{ type } parsing failed.'
+
 MESSAGES = {
 	'connected': connected,
 	'closed': connection_closed,
-	'parsed': parsing_complete
+	'parsed': parsing_complete,
+    'notparsed': parsing_failed
 }
