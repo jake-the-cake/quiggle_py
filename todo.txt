@@ -1,12 +1,16 @@
 /* High */
 .Quiggle main > rebuild
 .Injector > component tag
-
-/* Mid */
-.QuiggleServer > middleware
-.CLI > help menu
+.Injector > rebuild
+.Request > add args from dynamic
+.Refactor all
 .Toolkit > create and add get_elapse_time from HTTPController
 *** find home > timestamp dict
+
+/* Mid */
+.Color > preset classes
+.QuiggleServer > middleware
+.CLI > help menu
 
 /* Low */
 .Response > default page from config

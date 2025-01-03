@@ -10,6 +10,7 @@ class Request:
 		self.path:     str = None
 		self.method:   str = None
 		self.body:     str = None
+		self.args:    dict = {}
 		self.headers: dict = {}
 		try:
 			self._parse_request(data)

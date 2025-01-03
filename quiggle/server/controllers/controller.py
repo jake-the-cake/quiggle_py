@@ -27,7 +27,7 @@ class HTTPServerController:
 	
 	def _load_endpoint(self, router: RouteController) -> None:
 		self.response.protocol = self.request.accept()
-		return router.find_route(self.request.path, self.request.method)
+		return router.find_route(self.request)
 
 	''' Execute the located method '''
 	def _use_endpoint(self) -> None:

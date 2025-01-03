@@ -53,16 +53,16 @@ class FolderRouter(Router):
 			spec.loader.exec_module(module)
 			return module
 
-	def find_route(self, path: str, method: str) -> str:
+	def find_route(self, request) -> str:
 		module = None
 		prefix = self.settings['API_ROUTE_PREFIX']
 
-		if self._has_special_prefix(path, prefix):
+		if self._has_special_prefix(request.path, prefix):
 			method = method.lower()
-			module = self._get_callable(prefix, prefix, Path(path.replace(f'/{ prefix }', '') or '/'))
+			module = self._get_callable(prefix, prefix, Path(request.path.replace(f'/{ prefix }', '') or '/'))
 		else:
 			method = 'view'
-			module = self._get_callable('view', 'html', Path(path))
+			module = self._get_callable('view', 'html', Path(request.path))
 
 		if module == None:
 			return 404
