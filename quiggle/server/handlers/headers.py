@@ -44,6 +44,11 @@ class Headers:
 		if code in self.STATUS_MESSAGES.keys():
 			return self.STATUS_MESSAGES[code]
 		return 'Unknown Status'
+	
+	def _default_headers(self) -> None:
+		self.header('Content-Type', self.protocol)
+		self.header("Connection", "close")
+		self.header('Content-Length', len(self.body))
 
 	def code(self, code: int):
 		try:

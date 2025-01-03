@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.server.handlers.headers import Headers
-from quiggle.tools.logs.presets import errorlog
+from quiggle.tools.logs.presets import Print, UseColor
 from quiggle.config import globals
 from quiggle.server.render.injector import HTMLInjector
 
@@ -27,44 +27,47 @@ class Response(Headers):
 		self.body = injector.inject()
 
 	def html(self, html: str, variables: dict = {}):
-		self.header('Content-Type', 'text/html')
+		self.protocol = 'text/html'
 		self._inject(html, variables)
 		self.send()
 
 	def default(self, code: int = None) -> None:
-		if code != None:
-			self.code(code)
-		variables = {
-				'status_code': str(self.status_code),
-				'status_message': self.status_message
-		}
+		if code != None: self.code(code)
+		variables = self._default_variables()
 		if 'html' in self.protocol:
 			# TODO: check if another default page is being used
 			self.html(self._use_default_page(), variables)
-		else:
-			self.json(variables)
+		else: self.json(variables)
 
 	''' Returns html from default quiggle status pages. '''
 	def _use_default_page(self) -> str:
 		with open(self.DEFAULT_PAGE) as file:
 			return Response._trim_html(file.read())
-		
+	
+	def _default_variables(self) -> dict:
+		return { 'status_code': str(self.status_code),
+				'status_message': self.status_message }
+
 	def render(self, path: str, variables: dict = {}) -> None:
 		html = ''
 		self.html(html, variables)
 
 	def json(self, data: dict) -> None:
-		self.header('Content-Type', 'application/json')
+		self.protocol = 'application/json'
 		self.body = json.dumps(data)
 		self.send()
+
+	def _get_status_line(self) -> str:
+		return f'HTTP/1.1 { self.status_code } { self.status_message }'
+	
+	def _build_response(self) -> str:
+		self._default_headers()
+		return self._joint.join([self._get_status_line(), self.format(), self.body])
 
 	''' Sends the HTTP response. '''
 	def send(self):
 		try:
-			self.header("Connection", "close")
-			self.header('Content-Length', len(self.body))
-			status_line = f'HTTP/1.1 { self.status_code } { self.status_message }'
-			response = self._joint.join([status_line, self.format(), self.body])
+			response = self._build_response()
 			self.client_socket.sendall(response.encode())
 		except Exception as e:
-			print(errorlog('Error sending response:'), e)
+			Print.error('Error sending response', e)

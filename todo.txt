@@ -1,6 +1,5 @@
 /* High */
 .Quiggle main > rebuild
-.Response > json response
 .Injector > component tag
 
 /* Mid */
