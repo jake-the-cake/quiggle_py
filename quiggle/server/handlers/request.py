@@ -1,5 +1,5 @@
 ## local imports
-from quiggle.tools.logs.presets import errorlog, Print
+from quiggle.tools.logs.presets import Print
 from quiggle.server.prompts import MESSAGES
 
 class Request:
@@ -32,7 +32,6 @@ class Request:
 	
 	''' Parses HTTP headers from the request data. '''
 	def _parse_headers(self, header_lines) -> None:
-		# Loop through each header line and extract key-value pairs
 		for line in header_lines:
 			if line == "": break
 			key, value = line.split(":", 1)

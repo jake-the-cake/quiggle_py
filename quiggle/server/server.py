@@ -3,7 +3,7 @@ from quiggle.server import config
 from quiggle.server.controllers.controller import HTTPServerController
 from quiggle.server.controllers.socket import SocketController
 from quiggle.server.prompts import MESSAGES
-from quiggle.tools.logs.presets import errorlog
+from quiggle.tools.logs.presets import Printline
 from quiggle.types.server import MiddlewareListType, MiddlewareType, ClientAddressType, ClientSocketType
 from quiggle.server.router.controller import RouteController
 
@@ -23,14 +23,18 @@ class QuiggleServer:
 		self.server_socket: SocketController = SocketController(self.host, self.port)
 		self.router:         RouteController = RouteController()
 
+	def _print_connected(self) -> None:
+		Printline.full('white_on_magenta', MESSAGES['connected'](self.host, self.port, self.name))
+		Printline.full('note', 'Listening...')
+
 	''' Start the socket server and pass to accept connections. '''
 	def start(self) -> None:
 		try:
 			self.server_socket.start_socket()
-			print(MESSAGES['connected'](self.host, self.port, self.name))
+			self._print_connected()
 			self._accept_connections()
 		except Exception as e:
-			print(errorlog('Server error:'), e)
+			Printline.error('Server error:', e)
 
 	''' Accept and handle incoming connections. '''
 	def _accept_connections(self):
@@ -47,13 +51,12 @@ class QuiggleServer:
 	''' Handles a single connection. '''
 	def _handle_connection(self, client_socket: ClientSocketType, client_address: ClientAddressType):
 		try:
-			# create new controller instance
 			controller: HTTPServerController = HTTPServerController(client_socket, client_address, self.router)
 			for middleware in self.middlewares:
 				middleware(controller.request, controller.response)
 			controller.end()
 		except Exception as e:
-			print(errorlog(f'Error handling connection from { client_address[0] }:'), e)
+			Printline.error(f'Error handling connection from { client_address[0] }:', e)
 			raise e
 		finally:
 			client_socket.close()

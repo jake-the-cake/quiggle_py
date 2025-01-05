@@ -1,19 +1,15 @@
 ## local imports
-from quiggle.docs import doc
 from quiggle.prompts import MAIN_MENU, MESSAGES
-from quiggle.tools.logs.presets import errorlog, questionlog, labellog
+from quiggle.tools.logs.presets import Printline, UseColor
 
 ## gloabal imports
 import os
 from pathlib import Path
 
-## documentation
-DOC = doc(
-	'Quiggle Application',
-	usage = '''
-	text()
-	'''
-)
+class CreateProject:
+	pass
+
+
 
 def welcome_screen() -> None:
 	print(MESSAGES['welcome'])
@@ -30,27 +26,21 @@ def main_prompt() -> None:
 	if answer in valid_answers.keys():
 		valid_answers[answer]()
 	else:
-		print(ValueError(errorlog('Invalid option.')))
+		Printline.error('Invalid option.')
 		main_prompt()
 
-################
-''' # create '''
-# create a new project with default pages
 def create():
-	DOC.function(create.__name__, '')
-	
-	print(labellog('\nSETUP'))
+	Printline.yellow('\nSETUP')
 	def ask_for_project_name():
-		name       = input(questionlog('What is the project name? '))
+		name       = input(UseColor.brightgreen('What is the project name? '))
 		valid_name = name.strip().lower().replace(' ', '-')
+		
 		#
 		''' # strip special chars '''
 		#
-		
 
 		if not name == valid_name:
 			
-			# print(Colors.BRIGHT_CYAN + 'A change was made to your project name' + Colors.RESET)
 			print(MESSAGES['project_name_change'])
 			agree = input('Use name "{}"? [y/n] '.format(valid_name))
 			
@@ -59,7 +49,7 @@ def create():
 				return ask_for_project_name()
 		
 		if os.path.isdir(os.path.join(os.getcwd(), name)):
-			print(Exception(errorlog("Project name exists.")))
+			Printline.error('Project name exists.')
 			return ask_for_project_name()
 		return valid_name
 
@@ -114,7 +104,7 @@ def create():
 						build_file_system(item[k], new_dir)
 		
 		build_file_system(STRUCTURE[key], current_dir)
-	print(labellog(f'Setup complete for project "{ name }"'))
+	Printline.yellow(f'Setup complete for project "{ name }"')
 
 
 ##############

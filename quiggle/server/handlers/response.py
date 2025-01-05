@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.server.handlers.headers import Headers
-from quiggle.tools.logs.presets import Print, UseColor
+from quiggle.tools.logs.presets import Print
 from quiggle.config import globals
 from quiggle.server.render.injector import HTMLInjector
 

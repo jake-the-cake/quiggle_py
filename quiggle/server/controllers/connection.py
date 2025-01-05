@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.tools.codes.create import generate_code
-from quiggle.tools.logs.presets import infolog, buglog, labellog, questionlog
+from quiggle.tools.logs.presets import UseColor, Printline
 
 ## global imports
 import datetime, time
@@ -17,7 +17,7 @@ class ConnectionLogger:
 		self.id:        str = generate_code(length=code_length, mode='upper')
 		self.address:   str = client_address
 		self.timestamp: str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		self.message = questionlog(self.id) + ' :: '
+		self.message = UseColor.brightgreen(self.id) + ' :: '
 		self.start_timer()
 		self.log_connection()
 	
@@ -33,11 +33,11 @@ class ConnectionLogger:
 		return str(round(self.get_elapsed(), length)) + 'ms'
 	
 	def log_connection(self) -> None:
-		print(buglog(' '.join([self.PREFIX['connect'], self.address,'::', self.id, self.timestamp])))
+		Printline.full('note', f'Connection id { self.id } from { self.address } at { self.timestamp }')
 
 	def add_request_info(self, method: str, path: str) -> None:
-		self.message += f' {infolog(self.PREFIX['request']) } { method } { path }'
+		self.message += f' {UseColor.red(self.PREFIX['request']) } { method } { path }'
 	
 	def log_response(self, status_code: str, status: str) -> None:
-		self.message += f' { labellog(self.PREFIX['response']) } { status_code } { status } { self.get_milliseconds(1) }'
+		self.message += f' { UseColor.red(self.PREFIX['response']) } { status_code } { status } { self.get_milliseconds(1) }'
 		print(self.message)
