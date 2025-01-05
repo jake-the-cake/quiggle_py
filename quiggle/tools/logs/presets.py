@@ -4,13 +4,11 @@ from .colors import Colors
 ## global imports
 import shutil
 
-def useColor(message: str, fg: str = None, bg: str = None, reset: str = False):
-	if reset == False: reset = Colors.RESET
-	else: reset = ''
+def useColor(message: str, fg: str = None, bg: str = None):
 	prefix: str = ''
 	if fg: prefix += Colors.get_attribute(fg) or ''
 	if bg: prefix += Colors.get_attribute('BACKGROUND_' + bg) or ''
-	return prefix + message + reset
+	return prefix + message + Colors.RESET
 
 class UseColor:
 
@@ -31,6 +29,14 @@ class UseColor:
 		return useColor(*content, fg='white', bg='red')		
 	
 	@staticmethod
+	def white_on_green(*content) -> str:
+		return useColor(*content, fg='white', bg='green')		
+	
+	@staticmethod
+	def black_on_yellow(*content) -> str:
+		return useColor(*content, fg='black', bg='yellow')		
+	
+	@staticmethod
 	def black_on_lightgray(*content) -> str:
 		return useColor(*content, fg='black', bg='light_gray')
 	
@@ -44,28 +50,27 @@ class UseColor:
 
 	@staticmethod
 	def fg_yellow(*content) -> str:
-		return useColor(*content, fg='yellow', reset=True)	
+		return useColor(*content, fg='yellow')[:-4]	
 	
 	@staticmethod
 	def fg_red(*content) -> str:
-		return useColor(*content, fg='red', reset=True)	
+		return useColor(*content, fg='red')[:-4]	
 	
 	@staticmethod
 	def fg_white(*content) -> str:
-		return useColor(*content, fg='white', reset=True)	
+		return useColor(*content, fg='white')[:-4]	
 	
 	@staticmethod
 	def fg_blue(*content) -> str:
-		return useColor(*content, fg='blue', reset=True)	
+		return useColor(*content, fg='blue')[:-4]	
 	
 	@staticmethod
 	def fg_brightgreen(*content) -> str:
-		return useColor(*content, fg='bright_green', reset=True)
+		return useColor(*content, fg='bright_green')[:-4]
 
 	@staticmethod
 	def fg_black(*content) -> str:
-		return useColor(*content, fg='black', reset=True)
-
+		return useColor(*content, fg='black')[:-4]
 class Print:
 
 	@staticmethod
@@ -103,6 +108,14 @@ class Print:
 	@staticmethod
 	def black_on_magenta(*content) -> None:
 		print(UseColor.black_on_magenta(*content))
+
+	@staticmethod
+	def white_on_green(*content) -> None:
+		print(UseColor.white_on_green(*content))
+
+	@staticmethod	
+	def black_on_yellow(*content) -> None:
+		print(UseColor.black_on_yellow(*content))
 
 	@staticmethod
 	def white_on_magenta(*content) -> None:

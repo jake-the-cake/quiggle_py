@@ -8,8 +8,8 @@ import datetime, time
 class ConnectionLogger:
 
 	PREFIX = {
-		'request': infolog('REQ'),
-		'response': labellog('RES'),
+		'request': UseColor.red('REQ'),
+		'response': UseColor.red('RES'),
 		'connect': 'CONNECT'
 	}
 
@@ -17,7 +17,7 @@ class ConnectionLogger:
 		self.id:        str = generate_code(length=code_length, mode='upper')
 		self.address:   str = client_address
 		self.timestamp: str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		self.message = UseColor.brightgreen(self.id) + ' :: '
+		self.message = []
 		self.start_timer()
 		self.log_connection()
 	
@@ -33,11 +33,26 @@ class ConnectionLogger:
 		return str(round(self.get_elapsed(), length)) + 'ms'
 	
 	def log_connection(self) -> None:
-		Printline.full('note', f'Connection id { self.id } from { self.address } at { self.timestamp }')
+		Printline.full('note', f'{ self.timestamp } >>> Connection { self.id } established from { self.address }')
+
+	def _set_response_code(self, code: int) -> None:
+		x = str(code)[0]
+		if x == '2':
+			self.message = [UseColor.white_on_green((f' { str(code) } '))[:-4] + UseColor.black_on_lightgray('')[:-4]] + self.message 
+		elif x == '3':
+			self.message = [UseColor.black_on_yellow((f' { str(code) } '))[:-4] + UseColor.black_on_lightgray('')[:-4]] + self.message
+		else:
+			self.message = [UseColor.white_on_red((f' { str(code) } '))[:-4] + UseColor.black_on_lightgray('')[:-4]] + self.message
 
 	def add_request_info(self, method: str, path: str) -> None:
-		self.message += f' {UseColor.red(self.PREFIX['request']) } { method } { path }'
+		self.message.append(method)
+		self.message.append(path)
 	
 	def log_response(self, status_code: str, status: str) -> None:
-		self.message += f' { UseColor.red(self.PREFIX['response']) } { status_code } { status } { self.get_milliseconds(1) }'
-		print(self.message)
+		self._set_response_code(status_code)
+		self.message = [self.id] + self.message
+		self.message.append(status)
+		self.message.append(f'({ self.get_milliseconds(1) })')
+		self.message.append('XXXXXXXX')
+		# self.message += f' { UseColor.red(self.PREFIX['response']) } { status_code } { status } { self.get_milliseconds(1) }'
+		Printline.full('note',' '.join(self.message))
