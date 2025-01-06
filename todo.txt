@@ -8,7 +8,7 @@
 *** find home > timestamp dict
 
 /* Mid */
-.Color > preset classes
+.Color > special formats
 .QuiggleServer > middleware
 .CLI > help menu
 
