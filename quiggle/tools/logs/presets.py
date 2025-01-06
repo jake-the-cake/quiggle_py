@@ -1,8 +1,39 @@
 ## local imports
 from .colors import Colors
+from quiggle.tools.quiggle import Quiggle
 
 ## global imports
 import shutil
+
+class ColorPrinter(Quiggle):
+
+	def __init__(self, *message: tuple):
+		super().__init__()
+		self.message: list = self.toolkit.tuple_to_list(message)
+		self._timer = self._start_timer()
+
+	def _start_timer(self):
+		timer = self.toolkit.timer.callback_delay(0.1, self._print_message)
+		timer.start()
+		return timer
+
+	def _cancel_timer(self) -> None:
+		if self._timer.is_alive():
+			self._timer.cancel()
+
+	def _print_message(self) -> None:
+		print(self._color_code + self.message.__str__() + Colors.RESET)
+
+	def _get_colors(self, format: str):
+		return getattr(Colors, format.upper())
+
+	def format(self, format: str) -> None:
+		self._cancel_timer()
+		self._color_code = self._get_colors(format)
+		self._timer = self._start_timer()
+		# print(Colors.RED + self.message.__str__())
+
+ColorPrinter('this', 'is a message').format('red')
 
 def useColor(message: str, fg: str = None, bg: str = None):
 	prefix: str = ''
