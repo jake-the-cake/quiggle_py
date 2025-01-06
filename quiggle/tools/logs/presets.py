@@ -89,7 +89,7 @@ class UseColor:
 	
 	@staticmethod
 	def brightgreen(*content) -> str:
-		return useColor(*content, foreground='bright_green')
+		return useColor(*content, foreground='brightgreen')
 
 	@staticmethod
 	def white_on_red(*content) -> str:
@@ -105,7 +105,7 @@ class UseColor:
 	
 	@staticmethod
 	def black_on_lightgray(*content) -> str:
-		return useColor(*content, foreground='black', background='light_gray')
+		return useColor(*content, foreground='black', background='lightgray')
 	
 	@staticmethod
 	def black_on_magenta(*content) -> str:
