@@ -18,7 +18,7 @@ class ColorPrinter(Quiggle):
 		self._timer = self._start_timer()
 
 	def line(self, scheme: str) -> None:
-		self._build_message(scheme)
+		self._build_message(scheme, self._print_full_line)
 
 	def text(self, scheme: str) -> None:
 		self._build_message(scheme)
@@ -34,6 +34,17 @@ class ColorPrinter(Quiggle):
 		for callback in  callbacks:
 			callback()
 		self._print_message()
+
+	def _print_full_line(self):
+		lines = self._get_text_lines()
+		terminal_width = shutil.get_terminal_size().columns
+		self._parse_lines(lines, terminal_width)
+
+	def _parse_lines(self, lines: list, width: int):
+		print(lines, width)
+
+	def _get_text_lines(self) -> list:
+		return self._final_message.split('\n')
 
 	def _reset_colors(self) -> None:
 		self._final_message = self._final_message.replace(Colors.RESET, self._colors)
@@ -73,7 +84,8 @@ class ColorPrinter(Quiggle):
 	def _print_message(self) -> None:
 		print(self._colors + self._final_message.__str__() + Colors.RESET)
 
-ColorPrinter('this', 'is', Colors.BLUE, 'split_on', Colors.RESET, 'message').text('red_on_white')
+ColorPrinter('this', 'is', Colors.BLUE, 'a', Colors.RESET, 'message').text('red_on_white')
+ColorPrinter('this', 'is', Colors.RED, 'a\n', Colors.RESET, 'message').line('white_on_green')
 
 def useColor(message: str, foreground: str = None, background: str = None):
 	prefix: str = ''
