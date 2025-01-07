@@ -41,7 +41,15 @@ class ColorPrinter(Quiggle):
 		self._parse_lines(lines, terminal_width)
 
 	def _parse_lines(self, lines: list, width: int):
-		print(lines, width)
+		for index, line in enumerate(lines):
+			w = width
+			line = self._count_hidden_chars(line)
+			while w < len(line): w += w
+			lines[index] = line.ljust(w)
+			self._final_message = '\n'.join(lines)
+
+	def _count_hidden_chars(self, line: str) -> str:
+		return line
 
 	def _get_text_lines(self) -> list:
 		return self._final_message.split('\n')
