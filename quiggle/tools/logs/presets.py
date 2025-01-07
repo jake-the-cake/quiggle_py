@@ -39,11 +39,15 @@ class ColorPrinter(Quiggle):
 		self._final_message = self._final_message.replace(Colors.RESET, self._colors)
 
 	def _set_colors(self, scheme: str) -> None:
-		a = scheme.split(self.ON)
-		b = a[-1].split(self.WITH)
-		if len(a) == 1 and len(b) == 1:	b = []
-		colors = [a[0]] + b + ['', '']
+		split_on, split_with = self._parse_colors(scheme)
+		colors = [split_on[0]] + split_with + ['', '']
 		self._add_colors(colors[:2])
+
+	def _parse_colors(self, scheme: str) -> tuple:
+		split_on = scheme.split(self.ON)
+		split_with = split_on[-1].split(self.WITH)
+		if len(split_on) == 1 and len(split_with) == 1:	split_with = []
+		return split_on, split_with
 
 	def _add_colors(self, colors: list) -> None:
 		self._set_color(colors[0])
@@ -69,7 +73,7 @@ class ColorPrinter(Quiggle):
 	def _print_message(self) -> None:
 		print(self._colors + self._final_message.__str__() + Colors.RESET)
 
-ColorPrinter('this', 'is', Colors.BLUE, 'a', Colors.RESET, 'message').text('red_on_white')
+ColorPrinter('this', 'is', Colors.BLUE, 'split_on', Colors.RESET, 'message').text('red_on_white')
 
 def useColor(message: str, foreground: str = None, background: str = None):
 	prefix: str = ''
