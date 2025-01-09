@@ -1,5 +1,5 @@
 class Colors:
-	
+
 	BACKGROUND_BLACK = '\033[40m'
 	BACKGROUND_RED = '\033[41m'
 	BACKGROUND_GREEN = '\033[42m'
@@ -36,8 +36,30 @@ class Colors:
 
 	RESET = '\033[0m'
 
+	def __init__(self):
+		self._build_methods()
+
+	def _build_methods(self) -> None:
+		for color_name, color_code in self._parse_properties().items():
+			def _base_method(message: str, color_code: str = color_code) -> str:
+				return color_code + message + Colors.RESET
+			setattr(self, color_name.lower(), _base_method)
+
+	def _parse_properties(self) -> dict:
+		properties: dict = {}
+		for name, value in vars(self.__class__).items():
+			if isinstance(value, str):
+				if 'BACKGROUND_' in name:
+					name = name.replace('BACKGROUND_', '_on_')
+				properties[name] = value
+		return properties
+
 	@staticmethod
-	def get_attribute(value: str) -> str:
+	def get_color(value: str) -> str:
 		value = value.upper().replace('-', '_')
 		if value in Colors.__dict__.keys():
 			return Colors.__dict__[value]
+	
+colors = Colors()
+# print(colors.red('test'))/
+print(colors._on_red('test'))

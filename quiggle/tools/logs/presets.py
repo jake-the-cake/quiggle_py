@@ -75,7 +75,7 @@ class ColorPrinter(Quiggle):
 	def _set_color(self, value: str) -> None:
 		value = value.upper()
 		if hasattr(Colors, value):
-			self._colors += Colors.get_attribute(value)
+			self._colors += Colors.get_color(value)
 
 	def _set_background(self, value: str) -> None:
 		self._set_color('BACKGROUND_' + value)
@@ -97,8 +97,8 @@ ColorPrinter('this', 'is', Colors.RED, 'a\n', Colors.RESET, 'message').line('whi
 
 def useColor(message: str, foreground: str = None, background: str = None):
 	prefix: str = ''
-	if foreground: prefix += Colors.get_attribute(foreground) or ''
-	if background: prefix += Colors.get_attribute('BACKGROUND_' + background) or ''
+	if foreground: prefix += Colors.get_color(foreground) or ''
+	if background: prefix += Colors.get_color('BACKGROUND_' + background) or ''
 	return prefix + message + Colors.RESET
 
 class UseColor:
