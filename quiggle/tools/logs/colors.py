@@ -37,20 +37,42 @@ class Colors:
 	RESET = '\033[0m'
 
 	def __init__(self):
+		self._foregrounds = []
+		self._backgrounds = []
+		self._specials = []
+		self._ignore = ['RESET']
 		self._build_methods()
 
 	def _build_methods(self) -> None:
-		for color_name, color_code in self._parse_properties().items():
-			def _base_method(message: str, color_code: str = color_code) -> str:
-				return color_code + message + Colors.RESET
-			setattr(self, color_name.lower(), _base_method)
+		props = self._parse_properties()
+		for color_name in props.keys():
+			if color_name in self._ignore: continue
+			elif 'BACKGROUND' in color_name: self._backgrounds.append(color_name)
+			elif 'ADD' in color_name: self._specials.append(color_name)
+			else: self._foregrounds.append(color_name)
+		self._create_variations(props)
+
+	def _create_variations(self, props: dict):
+		for foreground in self._foregrounds:
+			foreground = foreground.lower()
+			setattr(self, foreground, self._use_base_method(props[foreground]))
+			for background in self._backgrounds:
+				background = background.lower().replace('BACKGROUND_', '')
+				setattr(self, foreground, self._use_base_method(props[foreground] + '_on_' + props[background]))
+				
+
+	def _use_base_method(self, color_code: str) -> callable:
+		def _base_method(message: str, color_code: str = color_code) -> str:
+			return color_code + message + Colors.RESET
+		return _base_method
+
 
 	def _parse_properties(self) -> dict:
 		properties: dict = {}
 		for name, value in vars(self.__class__).items():
 			if isinstance(value, str):
-				if 'BACKGROUND_' in name:
-					name = name.replace('BACKGROUND_', '_on_')
+				# if 'BACKGROUND_' in name:
+				# 	name = name.replace('BACKGROUND_', '_on_')
 				properties[name] = value
 		return properties
 
@@ -62,4 +84,4 @@ class Colors:
 	
 colors = Colors()
 # print(colors.red('test'))/
-print(colors._on_red('test'))
+print(colors.blue('test'))
