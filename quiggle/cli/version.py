@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.tools.logs.event import EventLog
-from quiggle.tools.logs.presets import labellog, infolog, errorlog
+from quiggle.tools.printer import print_error, print_note, colors
 from quiggle.tools.reader.reader import Reader
 from quiggle.vars.array import Array
 
@@ -52,16 +52,16 @@ def update_version(cli, path: str) -> None:
     reader.updated_lines.append(line.data)
   
   def log_entry():
-    log.use_log_message('notes', labellog('Update notes: '))
+    log.use_log_message('notes', colors.yellow('Update notes: '))
     if len(log.entry['notes']) > 0:
       log.add_entry()
       reader.write()
       log.write()
     else:
-      print(errorlog('Update notes are required.'))
+      print_error('Update notes are required.')
       log_entry()
   if not original_version:
-    print(labellog(f'Existing version number not found in { path }'))
+    print_note(f'Existing version number not found in { path }')
   else:
-    print(f'Update to version { labellog(new_version) } (previous: { infolog(original_version) })')
-    log_entry() 
+    print_note(f'Update to version { colors.white_on_green(new_version) } (previous: { colors.white_on_red(original_version) })')
+    log_entry()

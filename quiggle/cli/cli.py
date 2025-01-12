@@ -1,7 +1,7 @@
 ## local imports
 from quiggle.cli.version import update_version
-from quiggle.tools.logs.presets import labellog
 from quiggle.config.root import config_root
+from quiggle.tools.printer import print_error, print_note
 
 ## global imports
 import sys
@@ -30,7 +30,7 @@ class CliController:
 	def _parse_command(self) -> None:
 		if self.command in self.COMMANDS.keys():
 			self.COMMANDS[self.command](self, config_root('globals'))
-		else: print(labellog(f'Invalid command: "{ self.command }"'))
+		else: print_error(f'Invalid command: "{ self.command }"')
 
 	def _append_to_last_option(self, array: list, arg: any, key: str = None):
 		last_option = array[-1]
@@ -48,13 +48,13 @@ class CliController:
 	def filter_flags(self, flags: list):
 		for flag in self.flags:
 			if flag not in flags:
-				print(labellog(f'Ignored -{ flag } flag.'))
+				print_note(f'Ignored -{ flag } flag.')
 				self.flags.remove(flag)
 
 	def filter_options(self, options: list):
 		for option in self.options:
 			if option['option'] not in options:
-				print(labellog(f'Ignored --{ option['option'] } option.'))
+				print_note(f'Ignored --{ option['option'] } option.')
 				self.options.remove(option)
 
 	def _help_menu(self):

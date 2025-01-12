@@ -38,11 +38,11 @@ class ConnectionLogger:
 	def _set_response_code(self, code: int) -> None:
 		x = str(code)[0]
 		if x == '2':
-			self.message = [colors.white_on_green((f' { str(code) } '))[:-4] + colors.black_on_lightgray('')[:-4]] + self.message 
+			self.message = [colors.white_on_green(f' { str(code) } ')] + self.message 
 		elif x == '3':
-			self.message = [colors.black_on_yellow((f' { str(code) } '))[:-4] + colors.black_on_lightgray('')[:-4]] + self.message
+			self.message = [colors.black_on_yellow(f' { str(code) } ')] + self.message
 		else:
-			self.message = [colors.white_on_red((f' { str(code) } '))[:-4] + colors.black_on_lightgray('')[:-4]] + self.message
+			self.message = [colors.white_on_red(f' { str(code) } ')] + self.message
 
 	def add_request_info(self, method: str, path: str) -> None:
 		self.message.append(method)

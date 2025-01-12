@@ -35,6 +35,10 @@ class QuiggleServer:
 			self._accept_connections()
 		except Exception as e:
 			print_error('Server', e)
+			self._shut_down_message()
+
+	def _shut_down_message(self) -> None:
+			print_note("Shutting down server...")
 
 	''' Accept and handle incoming connections. '''
 	def _accept_connections(self):
@@ -45,7 +49,7 @@ class QuiggleServer:
 					args=(self.server_socket.accept_connections())
 				).start()
 		except KeyboardInterrupt:
-			print_note("Shutting down server...")
+			self._shut_down_message()
 			self.stop()
 
 	''' Handles a single connection. '''

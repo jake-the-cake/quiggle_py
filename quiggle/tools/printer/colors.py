@@ -1,6 +1,6 @@
 class Colors:
 
-    # background colors
+	# background colors
 	BACKGROUND_BLACK = '\033[40m'
 	BACKGROUND_RED = '\033[41m'
 	BACKGROUND_GREEN = '\033[42m'
@@ -18,7 +18,7 @@ class Colors:
 	BACKGROUND_BRIGHTCYAN = '\033[106m'
 	BACKGROUND_WHITE = '\033[107m'
 
-    # foreground colors
+	# foreground colors
 	BLACK = '\033[30m'
 	RED = '\033[31m'
 	GREEN = '\033[32m'
@@ -36,7 +36,7 @@ class Colors:
 	BRIGHTCYAN = '\033[96m'
 	WHITE = '\033[97m'
 
-    # special features
+	# special features
 	RESET = '\033[0m'
 
 	def __init__(self):
@@ -64,7 +64,6 @@ class Colors:
 				self._set_method_(name, props[foreground] + props[background])
 		for background in self._backgrounds:
 			name = 'on_' + Colors._format_background_name(background)
-			print(name)
 			self._set_method_(name, props[background])
 
 	def _set_method_(self, name: str, code: str) -> None:
