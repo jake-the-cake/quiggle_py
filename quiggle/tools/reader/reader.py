@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.tools.reader.parser import Parser
-from quiggle.tools.logs.presets import infolog
+from quiggle.tools.printer import Printer
 
 ## global imports
 from pathlib import Path
@@ -11,7 +11,7 @@ class Reader:
 	@staticmethod
 	def does_file_exist(file_path: Path) -> bool:
 		if not file_path.exists():
-			print(infolog(f'Could not find file "{ file_path }"'))
+			Printer(f'Could not find file "{ file_path }"').text('yellow')
 			return False
 		return True
 		
@@ -26,14 +26,13 @@ class Reader:
 		if not parent_path.exists():
 			self.setup_parent_directories(parent_path.parent)
 			parent_path.mkdir()
-			print(infolog(f'Created directory "{ parent_path }"'))
-
+			Printer(f'Created directory "{ parent_path }"').text('yellow')
 	def check_valid_path(self) -> None:
 		file_path = Path(self.file)
 		if not Reader.does_file_exist(file_path):
 			self.setup_parent_directories(file_path.parent)
 			file_path.touch()
-			print(infolog(f'Created file "{ file_path }"'))
+			Printer(f'Created file "{ file_path }"').text('yellow')
 
 	def get_lines(self) -> list:
 		with open(self.file, 'r') as file:

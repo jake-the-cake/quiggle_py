@@ -3,7 +3,7 @@ from quiggle.server import config
 from quiggle.server.controllers.controller import HTTPServerController
 from quiggle.server.controllers.socket import SocketController
 from quiggle.server.prompts import MESSAGES
-from quiggle.tools.logs.presets import Printline
+from quiggle.tools.printer import Printer, print_error
 from quiggle.types.server import MiddlewareListType, MiddlewareType, ClientAddressType, ClientSocketType
 from quiggle.server.router.controller import RouteController
 
@@ -24,8 +24,8 @@ class QuiggleServer:
 		self.router:         RouteController = RouteController()
 
 	def _print_connected(self) -> None:
-		Printline.full('white_on_magenta', MESSAGES['connected'](self.host, self.port, self.name))
-		Printline.full('note', 'Listening...')
+		Printer(MESSAGES['connected'](self.host, self.port, self.name)).line('white_on_magenta')
+		Printer('Listening...').line('note')
 
 	''' Start the socket server and pass to accept connections. '''
 	def start(self) -> None:
@@ -34,7 +34,8 @@ class QuiggleServer:
 			self._print_connected()
 			self._accept_connections()
 		except Exception as e:
-			Printline.error('Server error:', e)
+			print_error('Server', e)
+			print(e)
 
 	''' Accept and handle incoming connections. '''
 	def _accept_connections(self):
@@ -56,7 +57,7 @@ class QuiggleServer:
 				middleware(controller.request, controller.response)
 			controller.end()
 		except Exception as e:
-			Printline.error(f'Error handling connection from { client_address[0] }:', e)
+			Printer(f'Error handling connection from { client_address[0] }:', e).line('error')
 			raise e
 		finally:
 			client_socket.close()
