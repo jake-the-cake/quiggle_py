@@ -1,7 +1,7 @@
 ## local imports
 from quiggle.server.prompts import MESSAGES
 from quiggle.server.router import Router
-from quiggle.tools.printer import Printer
+from quiggle.tools.printer import Printer, print_note
 from quiggle.tools.reader.folder import FolderStructure
 
 ## global imports
@@ -15,7 +15,7 @@ class FolderRouter(Router):
 		self.settings = settings
 		self._check_required_settings()
 		self.route_dir: str = str(Path.cwd()) + '/server' + self.settings['ROUTE_FOLDER']
-		Printer(f'Initializing routes in { self.route_dir } folder.').line('note')
+		print_note(f'Initializing routes in { self.route_dir } folder.')
 		super().__init__()
 
 	def _check_required_settings(self):
@@ -29,7 +29,7 @@ class FolderRouter(Router):
 
 	def _set_tree(self):
 		tree = FolderStructure().parse(self.route_dir)
-		Printer(MESSAGES['parsed']('Folder')).line('note')
+		print_note(MESSAGES['parsed']('Folder'))
 		return super()._set_tree(tree)
 
 	def _set_routes(self):
@@ -41,7 +41,7 @@ class FolderRouter(Router):
 				self._sort_route(route, 'html')
 			if os.path.exists(self.route_dir + route + '/api.py'):
 				self._sort_route(route, 'api')
-		Printer('note', MESSAGES['parsed']('Route')).line('note')
+		print_note(MESSAGES['parsed']('Route'))
 
 	def _get_callable(self, page_name: str, prefix: str, endpoint: Path):
 		file_path = endpoint / f'{ page_name }.py'

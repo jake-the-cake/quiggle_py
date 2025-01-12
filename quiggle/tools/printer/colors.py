@@ -60,12 +60,12 @@ class Colors:
 			name = foreground.lower()
 			self._set_method_(name, props[foreground])
 			for background in self._backgrounds:
-				name = foreground.lower() + '_on_' + background.lower().replace('background_', '')
+				name = foreground.lower() + '_on_' + Colors._format_background_name(background)
 				self._set_method_(name, props[foreground] + props[background])
 		for background in self._backgrounds:
-			name = 'on_' + background.lower().replace('background_', '')
+			name = 'on_' + Colors._format_background_name(background)
+			print(name)
 			self._set_method_(name, props[background])
-		
 
 	def _set_method_(self, name: str, code: str) -> None:
 		setattr(self, name, self._use_base_method(code))				
@@ -75,12 +75,15 @@ class Colors:
 			return color_code + message + Colors.RESET
 		return _base_method
 
-
 	def _parse_properties(self) -> dict:
 		properties: dict = {}
 		for name, value in vars(self.__class__).items():
 			if not name.startswith('_') and isinstance(value, str): properties[name] = value
 		return properties
+	
+	@staticmethod
+	def _format_background_name(value: str):
+		return value.lower().replace('background_', '')
 
 	@staticmethod
 	def get_color(value: str) -> str:
@@ -89,4 +92,3 @@ class Colors:
 			return Colors.__dict__[value]
 		
 colors = Colors()
-colors.on_blue('test')

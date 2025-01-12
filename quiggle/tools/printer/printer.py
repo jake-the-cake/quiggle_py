@@ -19,6 +19,8 @@ class Printer(Quiggle):
 		self._timer = self._start_timer()
 
 	def line(self, scheme: str) -> None:
+		if hasattr(colors, scheme):
+			print(getattr(colors, scheme)('test'))
 		self._build_message(scheme, self._print_full_line)
 
 	def text(self, scheme: str) -> None:
@@ -101,3 +103,12 @@ class Printer(Quiggle):
 Printer('this', 'is', colors.blue_on_red('a'), 'message').text('red_on_white')
 Printer('this', 'is', colors.white_on_black('a\n'), 'message').line('white_on_green')
 Printer('test', 'error').line('error')
+
+
+# shortcut functions
+
+def print_error(error_type: str, exception: Exception) -> str:
+    Printer(f'{ colors.white_on_red(" " + error_type + " Error: ") } { exception }')
+
+def print_note(*message: str) -> str:
+    Printer(f'* { " ".join(message) }').line('on_blue')

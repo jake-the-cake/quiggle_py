@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.tools.codes.create import generate_code
-from quiggle.tools.printer import colors, Printer
+from quiggle.tools.printer import colors, Printer, print_note
 
 ## global imports
 import datetime, time
@@ -33,7 +33,7 @@ class ConnectionLogger:
 		return str(round(self.get_elapsed(), length)) + 'ms'
 	
 	def log_connection(self) -> None:
-		Printer(f'{ self.timestamp } >>> Connection { self.id } established from { self.address }').line('note')
+		print_note(f'{ self.timestamp } >>> Connection { self.id } established from { self.address }')
 
 	def _set_response_code(self, code: int) -> None:
 		x = str(code)[0]
@@ -53,4 +53,4 @@ class ConnectionLogger:
 		self.message = [self.id] + self.message
 		self.message.append(status)
 		self.message.append(f'({ self.get_milliseconds(1) })')
-		Printer(' '.join(self.message)).line('note')
+		print_note(' '.join(self.message))

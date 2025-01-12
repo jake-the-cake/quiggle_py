@@ -3,7 +3,7 @@ from quiggle.server import config
 from quiggle.server.controllers.controller import HTTPServerController
 from quiggle.server.controllers.socket import SocketController
 from quiggle.server.prompts import MESSAGES
-from quiggle.tools.printer import Printer, print_error
+from quiggle.tools.printer import Printer, print_error, print_note
 from quiggle.types.server import MiddlewareListType, MiddlewareType, ClientAddressType, ClientSocketType
 from quiggle.server.router.controller import RouteController
 
@@ -25,7 +25,7 @@ class QuiggleServer:
 
 	def _print_connected(self) -> None:
 		Printer(MESSAGES['connected'](self.host, self.port, self.name)).line('white_on_magenta')
-		Printer('Listening...').line('note')
+		print_note('Listening...')
 
 	''' Start the socket server and pass to accept connections. '''
 	def start(self) -> None:
@@ -35,7 +35,6 @@ class QuiggleServer:
 			self._accept_connections()
 		except Exception as e:
 			print_error('Server', e)
-			print(e)
 
 	''' Accept and handle incoming connections. '''
 	def _accept_connections(self):
@@ -46,7 +45,7 @@ class QuiggleServer:
 					args=(self.server_socket.accept_connections())
 				).start()
 		except KeyboardInterrupt:
-			print("Shutting down server...")
+			print_note("Shutting down server...")
 			self.stop()
 
 	''' Handles a single connection. '''
@@ -57,7 +56,7 @@ class QuiggleServer:
 				middleware(controller.request, controller.response)
 			controller.end()
 		except Exception as e:
-			Printer(f'Error handling connection from { client_address[0] }:', e).line('error')
+			print_error(f'Connection ({ client_address[0] })', e).line('error')
 			raise e
 		finally:
 			client_socket.close()
@@ -66,7 +65,7 @@ class QuiggleServer:
 	''' Middleware is a callable that takes (request, response). '''
 	def use(self, middleware: MiddlewareType):
 		self.middlewares.append(middleware)
-		print(f"Middleware added: {middleware.__name__}")
+		print_note(f"Middleware added: {middleware.__name__}")
 
 	''' Stops the server and closes the socket. '''
 	def stop(self):

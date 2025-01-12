@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.tools.reader.folder import FolderStructure
-from quiggle.tools.printer import Printer
+from quiggle.tools.printer import Printer,print_note
 
 class Router:
 
@@ -17,7 +17,7 @@ class Router:
 		return tree
 		
 	def _set_routes(self) -> list:
-		Printer('Sorting routes.').line('note')
+		print_note('Sorting routes.')
 		return FolderStructure(self.tree).paths()
 
 	def _is_dynamic_route(self, route: str) -> bool:
