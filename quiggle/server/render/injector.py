@@ -1,5 +1,5 @@
 ## local imports
-from quiggle.tools.logs.presets import errorlog
+from quiggle.tools.printer import Printer
 
 class HTMLInjector:
 	
@@ -113,5 +113,5 @@ class HTMLInjector:
 					values = self.tags[tag](variable, attributes)
 					self.updated_html = self.updated_html.replace(instance, ' '.join(values))
 				except Exception as e:
-					print(errorlog(f'Could not parse "{ tag }" tag:'), e)
+					Printer(f'Could not parse "{ tag }" tag:', e).line('error')
 		return self.updated_html

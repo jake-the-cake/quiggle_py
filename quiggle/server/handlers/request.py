@@ -1,5 +1,5 @@
 ## local imports
-from quiggle.tools.logs.presets import Print
+from quiggle.tools.printer import Printer
 from quiggle.server.prompts import MESSAGES
 
 class Request:
@@ -15,7 +15,7 @@ class Request:
 		try:
 			self._parse_request(data)
 		except Exception as e:
-			Print.error(MESSAGES['notparsed']('Request'), e)
+			Printer(MESSAGES['notparsed']('Request'), e).error()
 			raise Exception(e)
 
 	'''

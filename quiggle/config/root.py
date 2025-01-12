@@ -1,6 +1,5 @@
 ## local imports
 from quiggle import __file__ as file
-from quiggle.tools.logs.presets import infolog
 
 ## global imports
 from pathlib import Path
@@ -22,13 +21,11 @@ def config_root(filename: str = 'config') -> str:
         f'/quiggle/config/{ filename }.py',
         '/config.py'
     ]
-
     for path in paths:
         path = Path.cwd() / path[1:]
         if path.exists():
             return path
-
-    raise FileNotFoundError(infolog('Could not find a valid config file.'))
+    raise FileNotFoundError('Could not find a valid config file.')
 
 def get_config(root: str = 'config') -> dict:
      config_file = config_root(root)

@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.server.handlers.headers import Headers
-from quiggle.tools.logs.presets import Print
+from quiggle.tools.printer import Printer
 from quiggle.config import globals
 from quiggle.server.render.injector import HTMLInjector
 
@@ -70,4 +70,4 @@ class Response(Headers):
 			response = self._build_response()
 			self.client_socket.sendall(response.encode())
 		except Exception as e:
-			Print.error('Error sending response', e)
+			Printer('Error sending response', e).line('white_on_red')

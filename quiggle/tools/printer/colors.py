@@ -1,5 +1,6 @@
 class Colors:
 
+    # background colors
 	BACKGROUND_BLACK = '\033[40m'
 	BACKGROUND_RED = '\033[41m'
 	BACKGROUND_GREEN = '\033[42m'
@@ -17,6 +18,7 @@ class Colors:
 	BACKGROUND_BRIGHTCYAN = '\033[106m'
 	BACKGROUND_WHITE = '\033[107m'
 
+    # foreground colors
 	BLACK = '\033[30m'
 	RED = '\033[31m'
 	GREEN = '\033[32m'
@@ -34,6 +36,7 @@ class Colors:
 	BRIGHTCYAN = '\033[96m'
 	WHITE = '\033[97m'
 
+    # special features
 	RESET = '\033[0m'
 
 	def __init__(self):
@@ -54,12 +57,18 @@ class Colors:
 
 	def _create_variations(self, props: dict):
 		for foreground in self._foregrounds:
-			foreground = foreground.lower()
-			setattr(self, foreground, self._use_base_method(props[foreground]))
+			name = foreground.lower()
+			self._set_method_(name, props[foreground])
 			for background in self._backgrounds:
-				background = background.lower().replace('BACKGROUND_', '')
-				setattr(self, foreground, self._use_base_method(props[foreground] + '_on_' + props[background]))
-				
+				name = foreground.lower() + '_on_' + background.lower().replace('background_', '')
+				self._set_method_(name, props[foreground] + props[background])
+		for background in self._backgrounds:
+			name = 'on_' + background.lower().replace('background_', '')
+			self._set_method_(name, props[background])
+		
+
+	def _set_method_(self, name: str, code: str) -> None:
+		setattr(self, name, self._use_base_method(code))				
 
 	def _use_base_method(self, color_code: str) -> callable:
 		def _base_method(message: str, color_code: str = color_code) -> str:
@@ -70,10 +79,7 @@ class Colors:
 	def _parse_properties(self) -> dict:
 		properties: dict = {}
 		for name, value in vars(self.__class__).items():
-			if isinstance(value, str):
-				# if 'BACKGROUND_' in name:
-				# 	name = name.replace('BACKGROUND_', '_on_')
-				properties[name] = value
+			if not name.startswith('_') and isinstance(value, str): properties[name] = value
 		return properties
 
 	@staticmethod
@@ -81,7 +87,6 @@ class Colors:
 		value = value.upper().replace('-', '_')
 		if value in Colors.__dict__.keys():
 			return Colors.__dict__[value]
-	
+		
 colors = Colors()
-# print(colors.red('test'))/
-print(colors.blue('test'))
+colors.on_blue('test')

@@ -1,6 +1,6 @@
 ## local imports
 from quiggle.tools.codes.create import generate_code
-from quiggle.tools.logs.presets import UseColor, Printline
+from quiggle.tools.printer import colors, Printer
 
 ## global imports
 import datetime, time
@@ -8,8 +8,8 @@ import datetime, time
 class ConnectionLogger:
 
 	PREFIX = {
-		'request': UseColor.red('REQ'),
-		'response': UseColor.red('RES'),
+		'request': colors.red('REQ'),
+		'response': colors.red('RES'),
 		'connect': 'CONNECT'
 	}
 
@@ -33,16 +33,16 @@ class ConnectionLogger:
 		return str(round(self.get_elapsed(), length)) + 'ms'
 	
 	def log_connection(self) -> None:
-		Printline.full('note', f'{ self.timestamp } >>> Connection { self.id } established from { self.address }')
+		Printer(f'{ self.timestamp } >>> Connection { self.id } established from { self.address }').line('note')
 
 	def _set_response_code(self, code: int) -> None:
 		x = str(code)[0]
 		if x == '2':
-			self.message = [UseColor.white_on_green((f' { str(code) } '))[:-4] + UseColor.black_on_lightgray('')[:-4]] + self.message 
+			self.message = [colors.white_on_green((f' { str(code) } '))[:-4] + colors.black_on_lightgray('')[:-4]] + self.message 
 		elif x == '3':
-			self.message = [UseColor.black_on_yellow((f' { str(code) } '))[:-4] + UseColor.black_on_lightgray('')[:-4]] + self.message
+			self.message = [colors.black_on_yellow((f' { str(code) } '))[:-4] + colors.black_on_lightgray('')[:-4]] + self.message
 		else:
-			self.message = [UseColor.white_on_red((f' { str(code) } '))[:-4] + UseColor.black_on_lightgray('')[:-4]] + self.message
+			self.message = [colors.white_on_red((f' { str(code) } '))[:-4] + colors.black_on_lightgray('')[:-4]] + self.message
 
 	def add_request_info(self, method: str, path: str) -> None:
 		self.message.append(method)
@@ -53,6 +53,4 @@ class ConnectionLogger:
 		self.message = [self.id] + self.message
 		self.message.append(status)
 		self.message.append(f'({ self.get_milliseconds(1) })')
-		self.message.append('XXXXXXXX')
-		# self.message += f' { UseColor.red(self.PREFIX['response']) } { status_code } { status } { self.get_milliseconds(1) }'
-		Printline.full('note',' '.join(self.message))
+		Printer(' '.join(self.message)).line('note')

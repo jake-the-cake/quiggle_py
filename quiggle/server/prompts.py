@@ -1,9 +1,9 @@
 ## local imports
-from quiggle.tools.logs.presets import UseColor
+from quiggle.tools.printer import colors
 from quiggle.config import globals
 
 def connected(host: str, port: int, name: str) -> str:
-	return f'\n\t{ name } is live on { UseColor.fg_yellow(f'{ host }:{ port }') + UseColor.fg_white('') }XXXX\n\t--> Powered by { UseColor.fg_brightgreen(f'Quiggle v{ globals.VERSION_NUMBER }') }XX\n'
+	return f'\n\t{ name } is live on { colors.yellow(f'{ host }:{ port }') + colors.white('') }\n\t--> Powered by { colors.brightgreen(f'Quiggle v{ globals.VERSION_NUMBER }') }\n'
 
 def connection_closed(connection: str) -> str:
 	return f'{ connection } connection closed.'

@@ -1,5 +1,5 @@
 ## local imports
-from quiggle.tools.logs.presets import errorlog
+from quiggle.tools.printer import colors
 
 ## global imports
 import random
@@ -38,7 +38,7 @@ def generate_code(length: int, mode: str = 'all') -> str:
 
     # Get the character pool based on mode
     if mode not in pools:
-        raise ValueError(errorlog(f"Invalid mode '{mode}'. Available modes: {', '.join(pools.keys())}"))
+        raise ValueError(f"Invalid mode '{mode}'. Available modes: {', '.join(pools.keys())}")
 
     char_pool = pools[mode]
 
