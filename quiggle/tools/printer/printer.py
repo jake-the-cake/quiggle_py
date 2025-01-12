@@ -14,7 +14,8 @@ class Printer(Quiggle):
 		super().__init__()
 		self._colors:        str = colors.RESET
 		self._message:      list = self.toolkit.tuple_to_list(message)
-		self._final_message: str = ''
+		# self._final_message: str = ''
+		self._message_to_string()
 		self._timer = self._start_timer()
 
 	def line(self, scheme: str) -> None:
@@ -22,9 +23,6 @@ class Printer(Quiggle):
 
 	def text(self, scheme: str) -> None:
 		self._build_message(scheme)
-
-	# def error(self, label: str, *message) -> None:
-	# 		print(colors.white_on_red(label), *message)
 	   
 	def _message_to_string(self) -> None:
 		self._final_message = ' '.join(self._message)
