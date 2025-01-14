@@ -3,6 +3,7 @@ from quiggle.server import config
 from quiggle.server.prompts import MESSAGES
 from quiggle.tools.printer import Printer
 from quiggle.types.server import SocketAddressType, ClientSocketType
+from quiggle.server.controllers.connection import ConnectionLogger
 
 ## global imports
 import socket

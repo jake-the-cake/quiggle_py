@@ -5,6 +5,7 @@ from quiggle.server.controllers.socket import SocketController
 from quiggle.server.prompts import MESSAGES
 from quiggle.tools.printer import Printer, print_error, print_note
 from quiggle.types.server import MiddlewareListType, MiddlewareType, ClientAddressType, ClientSocketType
+from quiggle.server.controllers.connection import ConnectionLogger
 from quiggle.server.router.controller import RouteController
 
 ## global imports

@@ -2,7 +2,7 @@
 from quiggle.server.controllers.connection import ConnectionLogger
 from quiggle.server.handlers.request import Request
 from quiggle.server.handlers.response import Response
-from quiggle.tools.printer import Printer, print_note, print_error
+from quiggle.tools.printer import print_error
 from quiggle.server.router.controller import RouteController
 
 class HTTPServerController:
@@ -15,12 +15,13 @@ class HTTPServerController:
 	''' Parse request data. '''
 	def _handle_request(self, client_socket) -> None:
 		try:
-			data = client_socket.recv(1024).decode()
-			if data:
-				request = Request(data)
-				self.connection.add_request_info(request.method, request.path)
-				return request
-			raise LookupError('Could not find request data.')
+			while True:
+				data = client_socket.recv(1024).decode()
+				if data:
+					request = Request(data)
+					self.connection.add_request_info(request.method, request.path)
+					return request
+				raise LookupError('Could not find request data.')
 		except Exception as e:
 			print_error(f'Request Handler ({ self.client_address[0] })', e)
 	
