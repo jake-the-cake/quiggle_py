@@ -4,7 +4,7 @@ from quiggle.server.controllers.controller import HTTPServerController
 from quiggle.server.controllers.socket import SocketController
 from quiggle.server.prompts import MESSAGES
 from quiggle.tools.printer import Printer, print_error, print_note
-from quiggle.types.server import MiddlewareListType, MiddlewareType, ClientAddressType, ClientSocketType
+from quiggle.types.server import MiddlewareType, ClientAddressType, ClientSocketType
 from quiggle.server.controllers.connection import ConnectionLogger
 from quiggle.server.router.controller import RouteController
 
@@ -14,12 +14,11 @@ import threading
 class QuiggleServer:
 
 	def __init__(self, host: str = config.SERVER_HOST, port: int = config.SERVER_PORT, name: str = 'Server'):
-		# server variables
-		self.host: str = host
-		self.port: int = port
-		self.name: str = name
-		# middlewares
-		self.middlewares: MiddlewareListType = []
+		self.host:         str = host
+		self.port:         int = port
+		self.name:         str = name
+		self.connections: dict = {}
+		self.middlewares: list = []
 		# objects
 		self.server_socket: SocketController = SocketController(self.host, self.port)
 		self.router:         RouteController = RouteController()
@@ -55,13 +54,16 @@ class QuiggleServer:
 
 	''' Handles a single connection. '''
 	def _handle_connection(self, client_socket: ClientSocketType, client_address: ClientAddressType):
+
+		if client_socket not in self.connections.keys():
+			self.connections[client_socket] = ConnectionLogger(client_address[0], 8)
 		try:
-			controller: HTTPServerController = HTTPServerController(client_socket, client_address, self.router)
+			controller: HTTPServerController = HTTPServerController(client_socket, self.router, self.connections[client_socket])
 			for middleware in self.middlewares:
 				middleware(controller.request, controller.response)
 			controller.end()
 		except Exception as e:
-			print_error(f'Connection ({ client_address[0] })', e).line('error')
+			print_error(f'Connection ({ client_address[0] })', e)
 			raise e
 		finally:
 			client_socket.close()

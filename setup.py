@@ -6,7 +6,8 @@ setup(
 	version=VERSION_NUMBER,
 	packages=find_packages(),
 	install_requires=[
-			'click'
+			# 'click',
+            'psutil'
 	],
 	entry_points={
 			'console_scripts': [

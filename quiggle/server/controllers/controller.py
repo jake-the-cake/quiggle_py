@@ -6,11 +6,11 @@ from quiggle.tools.printer import print_error
 from quiggle.server.router.controller import RouteController
 
 class HTTPServerController:
-	def __init__(self, client_socket, client_address, router):
-		self.connection: ConnectionLogger = ConnectionLogger(client_address[0], 10)
+	def __init__(self, client_socket, router, connection):
+		self.connection: ConnectionLogger = connection
 		self.request:             Request = self._handle_request(client_socket)
 		self.response:           Response = Response(client_socket)
-		self.response.endpoint            = self._load_endpoint(router)
+		self._load_endpoint(router)
 	
 	''' Parse request data. '''
 	def _handle_request(self, client_socket) -> None:
@@ -27,7 +27,7 @@ class HTTPServerController:
 	
 	def _load_endpoint(self, router: RouteController) -> None:
 		self.response.protocol = self.request.accept()
-		return router.find_route(self.request)
+		self.response.endpoint = router.find_route(self.request)
 
 	''' Execute the located method '''
 	def _use_endpoint(self) -> None:
