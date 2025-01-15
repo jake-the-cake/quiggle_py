@@ -1,5 +1,5 @@
 ## local imports
-# from quiggle.server.controllers.connection import ConnectionLogger
+from quiggle.server.controllers.connection import ConnectionLogger
 from quiggle.server.handlers.request import Request
 from quiggle.server.handlers.response import Response
 from quiggle.tools.printer import print_error
@@ -7,7 +7,7 @@ from quiggle.server.router.controller import RouteController
 
 class HTTPServerController:
 	def __init__(self, client_socket, router, connection):
-		# self.connection: ConnectionLogger = connection
+		self.connection: ConnectionLogger = connection
 		self.request:             Request = self._handle_request(client_socket)
 		self.response:           Response = Response(client_socket)
 		self._load_endpoint(router)
@@ -19,7 +19,7 @@ class HTTPServerController:
 				data = client_socket.recv(1024).decode()
 				if data:
 					request = Request(data)
-					self.connection.add_request_info(request.method, request.path)
+					# self.connection.add_request_info(request.method, request.path)
 					return request
 				raise LookupError('Could not find request data.')
 		except Exception as e:
@@ -40,4 +40,4 @@ class HTTPServerController:
 			self.response.default(self.response.endpoint)
 		else: 
 			self._use_endpoint()
-		self.connection.log_response(self.response.status_code, self.response.STATUS_MESSAGES[self.response.status_code])
+		self.connection.respond(self.request, self.response)

@@ -17,9 +17,9 @@ class ConnectionLogger:
 		self.id:        str = generate_code(length=code_length, mode='upper')
 		self.address:   str = client_address
 		self.timestamp: str = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		self.message = []
+		# self.message = []
 		self.start_timer()
-		self.log_connection()
+		# self.log_connection()
 	
 	def start_timer(self) -> None:
 		self.start_time = time.time()
@@ -32,25 +32,34 @@ class ConnectionLogger:
 	def get_milliseconds(self, length: int = 1, format: str = '  ') -> str:
 		return str(round(self.get_elapsed(), length)) + 'ms'
 	
-	def log_connection(self) -> None:
-		print_note(f'{ self.timestamp } >>> Connection { self.id } established from { self.address }')
+	def _response_code(self, code: int) -> str:
+		"""
+		Sets the response code with appropriate color based on its category.
 
-	def _set_response_code(self, code: int) -> None:
-		x = str(code)[0]
-		if x == '2':
-			self.message = [colors.white_on_green(f' { str(code) } ')] + self.message 
-		elif x == '3':
-			self.message = [colors.black_on_yellow(f' { str(code) } ')] + self.message
-		else:
-			self.message = [colors.white_on_red(f' { str(code) } ')] + self.message
-
-	def add_request_info(self, method: str, path: str) -> None:
-		self.message.append(method)
-		self.message.append(path)
+		:param code: HTTP response code as an integer.
+		"""
+		return {
+			'2': colors.white_on_green,
+			'3': colors.black_on_yellow,
+		}.get(str(code)[0], colors.white_on_red)(f' { code } ')
 	
-	def log_response(self, status_code: str, status: str) -> None:
-		self._set_response_code(status_code)
-		self.message = [self.id] + self.message
-		self.message.append(status)
-		self.message.append(f'({ self.get_milliseconds(1) })')
-		print_note(' '.join(self.message))
+	def _response_message(self, response) -> str:
+		return self._response_code(
+			response.status_code) + colors.white_on_magenta(
+				f' { response.STATUS_MESSAGES[response.status_code] } ')
+
+	def _request_details(self, request) -> str:
+		return request.method, request.path
+	
+	def respond(self, request, response) -> None:
+		print_note(self._response_message(response),
+			self.timestamp,
+			# f'({ self.address })',
+			*self._request_details(request),
+			f'({ self.get_milliseconds(1) })')
+	# def log_response(self, status_code: str, status: str) -> None:
+	# 	self._set_response_code(status_code)
+	# 	self.message = [self.id] + self.message
+	# 	self.message.append(status)
+	# 	self.message.append(f'({ self.get_milliseconds(1) })')
+	# 	print_note(' '.join(self.message))
