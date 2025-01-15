@@ -3,11 +3,10 @@ from quiggle.server import config
 from quiggle.server.prompts import MESSAGES
 from quiggle.tools.printer import print_note, print_error
 from quiggle.types.server import SocketAddressType, ClientSocketType
-from quiggle.server.controllers.connection import ConnectionLogger
 
 ## global imports
 import socket
-import psutil  # To detect processes using the port
+import psutil
 
 class SocketController:
 	"""

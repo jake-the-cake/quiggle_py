@@ -23,7 +23,7 @@ class HTTPServerController:
 					return request
 				raise LookupError('Could not find request data.')
 		except Exception as e:
-			print_error(f'Request Handler ({ self.client_address[0] })', e)
+			print_error(f'Request { self.connection.id }', e)
 	
 	def _load_endpoint(self, router: RouteController) -> None:
 		self.response.protocol = self.request.accept()

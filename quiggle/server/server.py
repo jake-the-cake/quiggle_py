@@ -83,7 +83,7 @@ class QuiggleServer:
 			self.connections[client_socket] = ConnectionLogger(client_address[0], 8)
 
 		try:
-			while True:
+			# while True:
 				# Process the request with the HTTP controller
 				controller = HTTPServerController(client_socket, self.router, self.connections[client_socket])
 
@@ -96,6 +96,7 @@ class QuiggleServer:
 
 		except Exception as e:
 			print_error(f"Error handling connection from {client_address[0]}:{client_address[1]}", e)
+			raise e
 		finally:
 			# Ensure the socket is closed and remove it from active connections
 			client_socket.close()
