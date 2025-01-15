@@ -1,22 +1,17 @@
 /* High */
 .Quiggle main > rebuild
-.Injector > component tag
-.Injector > rebuild
 .Request > add args from dynamic
-.Refactor all
 .Toolkit > create and add get_elapse_time from HTTPController
 *** find home > timestamp dict
 
 /* Mid */
+.Injector > component tag
+.Injector > rebuild
 .Color > special formats
-.QuiggleServer > middleware
 .CLI > help menu
 
 /* Low */
 .Response > default page from config
 .Request > web token
-.Socket > kill port
-.Socket > retry connection
-.Documentation > work on
 
 /* stop vs code lint error */ { all: auto }

@@ -1,5 +1,5 @@
 ## local imports
-from quiggle.server.controllers.connection import ConnectionLogger
+# from quiggle.server.controllers.connection import ConnectionLogger
 from quiggle.server.handlers.request import Request
 from quiggle.server.handlers.response import Response
 from quiggle.tools.printer import print_error
@@ -7,7 +7,7 @@ from quiggle.server.router.controller import RouteController
 
 class HTTPServerController:
 	def __init__(self, client_socket, router, connection):
-		self.connection: ConnectionLogger = connection
+		# self.connection: ConnectionLogger = connection
 		self.request:             Request = self._handle_request(client_socket)
 		self.response:           Response = Response(client_socket)
 		self._load_endpoint(router)
